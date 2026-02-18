@@ -1,4 +1,5 @@
 
+using System.ComponentModel.DataAnnotations;
 using System.Reflection.Metadata;
 using Capstone.Models;
 using MySqlConnector;
@@ -14,7 +15,9 @@ public class UserRepository
         this._database = database_parameter;
     }
 
-    // Method: Get all users user_id 
+    // -------------------------------------------------------------------
+    // Method:  Retrieves only user IDs to demonstrate data pipeline flow.
+    // -------------------------------------------------------------------
     public List<int> GetAllUserID()
     {
     List<int> userIDList = new List<int>();
@@ -22,7 +25,7 @@ public class UserRepository
     using var connection = _database.GetConnection();
     connection.Open();
 
-    string query = "SELECT user_id, first_name, last_name, user_name, user_email, user_address FROM users;";
+    string query = "SELECT user_id FROM users;";
     using var command = new MySqlCommand(query, connection);
     using var reader = command.ExecuteReader();
 
@@ -33,7 +36,35 @@ public class UserRepository
     }
     return userIDList;
     }
-
     
+    // ------------------------------------------------------------------
+    // METHOD: Retrieves full User objects.
+    // ------------------------------------------------------------------
+    
+    public List<User> GetAllUsers()
+    {
+        List<User> users = new List<User>();
 
-}
+        using var connection = _database.GetConnection();
+        connection.Open();
+        string query = @"SELECT user_id, first_name, last_name, user_name, user_email, user_address FROM users";
+
+        using var command = new MySqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
+
+        while (reader.Read())
+        {
+            int userId = reader.GetInt32("user_id");
+            string firstName = reader.GetString("first_name");
+            string lastName = reader.GetString("last_name");
+            string userName = reader.GetString("user_name");
+            string userEmail = reader.GetString("user_email");
+            string address = reader.GetString("user_address");
+
+            User user = new User(userId, firstName, lastName, userName, userEmail, address);
+            users.Add(user);
+        }
+        return users;
+
+    }
+ }
