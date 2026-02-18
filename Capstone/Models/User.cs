@@ -45,8 +45,13 @@ public class User : IDisplayable
     // Prints the details of the user to the console.
     public virtual void DisplayDetails()
     {
-        Console.WriteLine("User details");
+        Console.WriteLine("-\nUser details");
         Console.WriteLine($"-\nUser ID: {UserId}\nFirst Name: {FirstName}\nLast Name: {LastName}\nUser Name: {UserName}\nUser Email: {UserEmail}\nUser Adress: {UserAdress}");
+    }
+
+    public override string ToString()
+    {
+        return $"-\nUser ID: {UserId}\nFirst Name: {FirstName}\nLast Name: {LastName}\nUser Name: {UserName}\nUser Email: {UserEmail}\nUser Adress: {UserAdress}";
     }
 
 }
