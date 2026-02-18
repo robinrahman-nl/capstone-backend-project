@@ -18,7 +18,7 @@ namespace Capstone;
 
         foreach (var item in userList1)
         {
-            item.DisplayDetails();
+            Console.WriteLine(item);
         }
     }
 
