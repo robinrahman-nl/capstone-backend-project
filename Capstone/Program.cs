@@ -14,19 +14,13 @@ namespace Capstone;
         Database database1 = new Database();
         UserRepository userRepository1 = new UserRepository(database1);
 
-        List <int> userIDList1 = userRepository1.GetAllUserID();
+        List <User> userList1 = userRepository1.GetAllUsers();
 
-        User user2 = new User(userIDList1[0]);
-
-        user2.DisplayDetails();
+        foreach (var item in userList1)
+        {
+            item.DisplayDetails();
+        }
     }
 
     }
-
-        
-
-
-
-
-
 
