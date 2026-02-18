@@ -4,16 +4,16 @@ namespace Capstone.Models;
 
 public class Customer : IDisplayable
 {
+    public User User { get; private set; }
     public int CustomerId { get; private set; }
     public int Age { get; private set; }
 
-    public User User { get; private set; }
 
     public Customer(User user, int customerId, int age)
     {
+        this.User = user;
         this.CustomerId = customerId;
         this.Age = age;
-        this.User = user;
     }
     public virtual void DisplayDetails()
     {
