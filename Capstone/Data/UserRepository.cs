@@ -1,6 +1,3 @@
-
-using System.ComponentModel.DataAnnotations;
-using System.Reflection.Metadata;
 using Capstone.Models;
 using MySqlConnector;
 
@@ -9,6 +6,7 @@ namespace Capstone.Data;
 public class UserRepository
 {
     public readonly Database _database;
+
     // Constructor
     public UserRepository(Database database_parameter)
     {
@@ -43,15 +41,25 @@ public class UserRepository
     
     public List<User> GetAllUsers()
     {
-        List<User> users = new List<User>();
-
         using var connection = _database.GetConnection();
         connection.Open();
-        string query = @"SELECT user_id, first_name, last_name, user_name, user_email, user_address FROM users";
 
+        string query = @"
+    SELECT 
+        user_id,
+        first_name,
+        last_name, 
+        user_name, 
+        user_email, 
+        user_address 
+    FROM 
+        users
+    ORDER BY
+        user_id";
         using var command = new MySqlCommand(query, connection);
         using var reader = command.ExecuteReader();
 
+        List<User> users = new List<User>();
         while (reader.Read())
         {
             int userId = reader.GetInt32("user_id");
@@ -65,6 +73,5 @@ public class UserRepository
             users.Add(user);
         }
         return users;
-
     }
  }
