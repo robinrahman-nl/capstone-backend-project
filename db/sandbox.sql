@@ -162,6 +162,16 @@ order_id = 11 AND order_status = 'SUBMITTED'
 SELECT * FROM 
 product_catalogue;
 
+--
+SELECT 
+    product_id,
+    product_name,
+    description,
+    product_price,
+    quantity_in_stock
+FROM product_catalogue
+ORDER BY product_id;
+
 -- Customer:
 -- As a customer, I want to be able to add a product from the catalog to my
 -- shopping cart.
@@ -197,8 +207,99 @@ WHERE order_id = 1
 
 
 -- ####################################################################################################
+-- GetAllUsers()
+-- Show all users.
 -- ####################################################################################################
 
--- show all users. 
 SELECT * 
 FROM users;
+
+-- 
+SELECT 
+        user_id,
+        first_name,
+        last_name, 
+        user_name, 
+        user_email, 
+        user_address 
+    FROM 
+        users
+    ORDER BY
+        user_id;
+
+
+
+-- ####################################################################################################
+-- GetAdmins()
+-- Show all admins with all info. 
+-- Show all columns from admins and users table.
+-- ####################################################################################################
+SELECT 
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.user_name,
+    u.user_email,
+    u.user_address,
+    a.admin_id
+FROM admin a
+JOIN users u 
+    ON a.user_id = u.user_id
+ORDER BY
+    a.admin_id;
+
+-- ####################################################################################################
+-- Show all customers. Show all column from customers and users table. 
+-- ####################################################################################################
+
+
+-- ####################################################################################################
+-- GetAllProducts()
+-- Show all products.
+-- Show all columns from product table.
+-- ####################################################################################################
+SELECT 
+    product_id,
+    product_name,
+    description,
+    product_price,
+    quantity_in_stock
+FROM 
+    product_catalogue
+ORDER BY 
+    product_id;
+
+
+-- ####################################################################################################
+-- GetOrders()
+-- Show all Orders.
+-- Show all columns from order, customer and user table.
+-- ####################################################################################################
+
+SELECT 
+    o.order_id,
+    o.order_date,
+    o.order_status,
+
+    c.customer_id,
+
+    u.user_id,
+    u.first_name,
+    u.last_name,
+    u.user_name,
+    u.user_email,
+    u.user_address
+
+FROM 
+    orders o
+
+JOIN 
+    customer c 
+    ON o.customer_id = c.customer_id
+
+JOIN 
+    users u 
+    ON c.user_id = u.user_id
+
+ORDER BY 
+    o.order_id;
