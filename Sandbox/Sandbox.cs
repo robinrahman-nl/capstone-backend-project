@@ -30,10 +30,8 @@ catch (Exception ex)
 
 
 /* ########################################################################################
-        Create an Test Object  
+        Create an Test Object for pipeline.
    ######################################################################################## */
-
-
 
 string connectionString =
     "Server=localhost;Database=capstone_store;User=capstone_user;Password=1234;";
@@ -79,9 +77,21 @@ catch (Exception ex)
     Console.WriteLine("❌ Error:");
     Console.WriteLine(ex.Message);
 }
-    
 
+/* ########################################################################################
+        Test GetAllUserID for pipeline 2
+   ######################################################################################## */
 
+        User user3 = new User(999);
+        user3.DisplayDetails();
 
+        
+        Database database1 = new Database();
+        UserRepository userRepository1 = new UserRepository(database1);
 
+        List <int> userIDList1 = userRepository1.GetAllUserID();
+        List <string> userFirstNameList1 = userRepository1.GetAllFirstName();
 
+        User user3 = new User(userIDList1[0]);
+
+        user3.DisplayDetails();
