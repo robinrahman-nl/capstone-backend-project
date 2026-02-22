@@ -1,24 +1,30 @@
-using Capstone.Interfaces;
-
 namespace Capstone.Models;
 
-public class Customer : IDisplayable
+public class Customer
 {
-    public User User { get; private set; }
     public int CustomerId { get; private set; }
+    public User User { get; private set; }
     public int Age { get; private set; }
 
 
-    public Customer(User user, int customerId, int age)
+    public Customer(int customerId, User user, int age)
     {
-        this.User = user;
         this.CustomerId = customerId;
+        this.User = user;
         this.Age = age;
     }
-    public virtual void DisplayDetails()
+    public override string ToString()
     {
-        Console.WriteLine("User details");
-        Console.WriteLine($"-\nUser ID: {User.UserId}\nFirst Name: {User.FirstName}\nLast Name: {User.LastName}\nUser Name: {User.UserName}\nUser Email: {User.UserEmail}\nUser Adress: {User.UserAdress}\nCustomer ID: {CustomerId}\nCustomer Age: {Age}");
+        return
+    @"----------------
+Customer Details
+----------------
+Customer ID: " + CustomerId + @"
+
+" + User + @"
+
+Age: " + Age + @"
+";
     }
 
 }
