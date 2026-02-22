@@ -10,7 +10,7 @@ public class User : IDisplayable
     public string LastName { get; private set; }
     public string UserName { get; private set; }
     public string UserEmail { get; private set; }
-    public string UserAdress { get; private set; }
+    public string UserAddress { get; private set; }
 
     public User(int userId, string firstName, string lastName, string userName, string userEmail, string userAdress)
     {
@@ -19,7 +19,7 @@ public class User : IDisplayable
         LastName = lastName;
         UserName = userName;
         UserEmail = userEmail;
-        UserAdress = userAdress;
+        UserAddress = userAdress;
     }
 
     public User(int userId)
@@ -29,7 +29,7 @@ public class User : IDisplayable
         LastName = "Unknown";
         UserName = "Unknown";
         UserEmail = "Unknown";
-        UserAdress = "Unknown";
+        UserAddress = "Unknown";
     }
 
     public User()
@@ -39,19 +39,28 @@ public class User : IDisplayable
         LastName = "Unknown";
         UserName = "Unknown";
         UserEmail = "Unknown";
-        UserAdress = "Unknown";
+        UserAddress = "Unknown";
     }
 
     // Prints the details of the user to the console.
     public virtual void DisplayDetails()
     {
-        Console.WriteLine("-\nUser details");
-        Console.WriteLine($"-\nUser ID: {UserId}\nFirst Name: {FirstName}\nLast Name: {LastName}\nUser Name: {UserName}\nUser Email: {UserEmail}\nUser Adress: {UserAdress}");
+
+        Console.WriteLine($"-\nUser ID: {UserId}\nFirst Name: {FirstName}\nLast Name: {LastName}\nUser Name: {UserName}\nUser Email: {UserEmail}\nUser Adress: {UserAddress}");
     }
 
     public override string ToString()
     {
-        return $"-\nUser ID: {UserId}\nFirst Name: {FirstName}\nLast Name: {LastName}\nUser Name: {UserName}\nUser Email: {UserEmail}\nUser Adress: {UserAdress}";
+        return
+    @"------------
+User Details
+------------
+User ID: " + UserId + @"
+First Name: " + FirstName + @"
+Last Name: " + LastName + @"
+User Name: " + UserName + @"
+User Email: " + UserEmail + @"
+User Address: " + UserAddress;
     }
 
 }
