@@ -10,9 +10,10 @@ public class Product
 
     public Product(int productId, string productName, string description, double productPrice, int quantityInStock)
     {
+        ProductId = productId;
         ProductName = productName;
         Description = description;
-        ProductName = productName;
+        ProductPrice = productPrice;
         QuantityInStock = quantityInStock;
     }
 
@@ -28,9 +29,6 @@ public class Product
     public override string ToString()
     {
         return @$"
-        ----------------
-        Product Details
-        ----------------
         Product Id: {ProductId};
         Product Name: {ProductName};
         Description: {Description}
@@ -38,7 +36,5 @@ public class Product
         Quantity in Stock: {QuantityInStock};
         ";
     }
-
-
-    
+   
 }
