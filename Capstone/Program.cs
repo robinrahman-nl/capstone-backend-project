@@ -7,20 +7,23 @@ namespace Capstone;
     class Program {
     static void Main(string[] args)
     {
-        User user1 = new User(999);
-        user1.DisplayDetails();
+        
+// ==================================================================
+// TEST 5: 
+// Retrieve OrderDetails entities from database
+// Purpose: Validate OrderDetailsRepository data retrieval,
+// object mapping (Order + Product), and ToString() formatting.
+// Data flow: Database → OrderDetailsRepository → Domain Model → Console.
+// ==================================================================
 
-        // #######################
-        Database database1 = new Database();
-        UserRepository userRepository1 = new UserRepository(database1);
+Database database1 = new Database();
+OrderDetailsRepository orderDetailsRepository1 = new OrderDetailsRepository(database1);
 
-        List <User> userList1 = userRepository1.GetAllUsers();
+List<OrderDetails> orderDetailsList1 = orderDetailsRepository1.GetAllOrderDetails();
 
-        foreach (var item in userList1)
-        {
-            Console.WriteLine(item);
-        }
+foreach (var item in orderDetailsList1)
+{
+    Console.WriteLine(item);
+}
     }
-
     }
-
