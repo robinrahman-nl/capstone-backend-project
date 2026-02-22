@@ -14,6 +14,17 @@ public class Admin
 
     public override string ToString()
     {
-        return $"-\nUser ID: {User.UserId}\nFirst Name: {User.FirstName}\nLast Name: {User.LastName}\nUser Name: {User.UserName}\nUser Email: {User.UserEmail}\nUser Adress: {User.UserAdress}";
+        return @$"
+        ----------------
+        Admin Details
+        ----------------
+        Admin Id: {AdminId}
+        User Id: {User.UserId}
+        First Name: {User.FirstName}
+        Last Name: {User.LastName}
+        User Name: {User.UserName}
+        Email: {User.UserEmail}
+        Adress: {User.UserAddress}
+        ";
     }
 }
