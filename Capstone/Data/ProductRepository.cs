@@ -16,12 +16,12 @@ public class ProductRepository
     // METHOD: Retrieves full Product objects.
     // ------------------------------------------------------------------
 
-public List<Product> GetAllProducts()
+    public List<Product> GetAllProducts()
     {
-     using var connection = _database.GetConnection();
-     connection.Open();
+        using var connection = _database.GetConnection();
+        connection.Open();
 
-    string query = @$"
+        string query = @$"
 SELECT 
     product_id,
     product_name,
@@ -33,24 +33,42 @@ FROM
 ORDER BY
     product_id;";
 
-    using var command = new MySqlCommand(query, connection);
-    using var reader = command.ExecuteReader();
+        using var command = new MySqlCommand(query, connection);
+        using var reader = command.ExecuteReader();
 
-    List<Product> products = new List<Product>();
-    while (reader.Read())
-    {   
-        int productId = reader.GetInt32("product_id");
-        string productName = reader.GetString("product_name");
-        string description = reader.GetString("description");
-        double productPrice = reader.GetDouble("product_price");
-        int quantityInStock = reader.GetInt32("quantity_in_stock");
+        List<Product> products = new List<Product>();
+        while (reader.Read())
+        {
+            int productId = reader.GetInt32("product_id");
+            string productName = reader.GetString("product_name");
+            string description = reader.GetString("description");
+            double productPrice = reader.GetDouble("product_price");
+            int quantityInStock = reader.GetInt32("quantity_in_stock");
 
-        Product product = new Product(productId, productName, description, productPrice, quantityInStock);
-        products.Add(product);
+            Product product = new Product(productId, productName, description, productPrice, quantityInStock);
+            products.Add(product);
 
+        }
+        return products;
     }
-    return products;
-    }
 
-    
+    /*
+    Method: INSERT a new product in product catalogue. 
+    */
+
+    public void InsertProduct()
+    {
+        using var connection = _database.GetConnection();
+        connection.Open();
+
+        string query = @"
+        INSERT INTO 
+        product_catalogue 
+        (product_name, description, product_price, quantity_in_stock)
+        VALUES
+        ('Test_name_3', 'Test_description_2', 12.50, 120)
+        ;";
+        MySqlCommand myCommand = new MySqlCommand(query, connection);
+        myCommand.ExecuteNonQuery();
+    }
 }
