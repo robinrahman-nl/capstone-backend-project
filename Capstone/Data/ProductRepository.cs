@@ -9,7 +9,7 @@ public class ProductRepository
 
     public ProductRepository(Database database)
     {
-        this._database = database;
+        _database = database;
     }
 
     // ------------------------------------------------------------------
@@ -56,7 +56,7 @@ ORDER BY
     Method: INSERT a new product in product catalogue. 
     */
 
-    public void InsertProduct()
+    public void InsertProduct(string productName, string description, double productPrice, int quantityInStock)
     {
         using var connection = _database.GetConnection();
         connection.Open();
@@ -66,9 +66,13 @@ ORDER BY
         product_catalogue 
         (product_name, description, product_price, quantity_in_stock)
         VALUES
-        ('Test_name_3', 'Test_description_2', 12.50, 120)
+        (@product_name, @description, @product_price, @quantity_in_stock)
         ;";
         MySqlCommand myCommand = new MySqlCommand(query, connection);
+        myCommand.Parameters.AddWithValue("@product_name", productName);
+        myCommand.Parameters.AddWithValue("@description", description);
+        myCommand.Parameters.AddWithValue("@product_price", productPrice);
+        myCommand.Parameters.AddWithValue("@quantity_in_stock", quantityInStock);
         myCommand.ExecuteNonQuery();
     }
 }
