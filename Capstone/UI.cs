@@ -1,3 +1,4 @@
+using System.Xml;
 using Capstone.Services;
 
 namespace Capstone;
@@ -36,6 +37,11 @@ public class UI
             Console.WriteLine("Invalid input. Please enter a valid number:");
         }
 
-        _adminService.AddProduct(productNameInput, descriptionInput, productPrice, quantity);
+        bool succes = _adminService.AddProduct(productNameInput, descriptionInput, productPrice, quantity);
+        if (succes)
+        Console.WriteLine("Product succesfully added.");
+        else
+        Console.WriteLine("Failed to add product.");       
+        
     }
 }

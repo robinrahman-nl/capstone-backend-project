@@ -1,29 +1,19 @@
 ﻿using Capstone.Data;
 using Capstone.Models;
-
+using Capstone.Services;
 
 namespace Capstone;
 
-    class Program {
+class Program
+{
     static void Main(string[] args)
     {
-        
-// ==================================================================
-// TEST 5: 
-// Retrieve OrderDetails entities from database
-// Purpose: Validate OrderDetailsRepository data retrieval,
-// object mapping (Order + Product), and ToString() formatting.
-// Data flow: Database → OrderDetailsRepository → Domain Model → Console.
-// ==================================================================
 
-Database database1 = new Database();
-OrderDetailsRepository orderDetailsRepository1 = new OrderDetailsRepository(database1);
+        Database database1 = new Database();
+        ProductRepository productRepository3 = new ProductRepository(database1);
+        AdminService adminService3 = new AdminService(productRepository3);
+        UI uI3 = new UI(adminService3);
 
-List<OrderDetails> orderDetailsList1 = orderDetailsRepository1.GetAllOrderDetails();
-
-foreach (var item in orderDetailsList1)
-{
-    Console.WriteLine(item);
+        uI3.AddProductFromInput();
+    }
 }
-    }
-    }

@@ -56,7 +56,7 @@ ORDER BY
     Method: INSERT a new product in product catalogue. 
     */
 
-    public void InsertProduct(string productName, string description, double productPrice, int quantityInStock)
+    public int InsertProduct(string productName, string description, double productPrice, int quantityInStock)
     {
         using var connection = _database.GetConnection();
         connection.Open();
@@ -73,6 +73,8 @@ ORDER BY
         myCommand.Parameters.AddWithValue("@description", description);
         myCommand.Parameters.AddWithValue("@product_price", productPrice);
         myCommand.Parameters.AddWithValue("@quantity_in_stock", quantityInStock);
-        myCommand.ExecuteNonQuery();
+        
+        int affectedRows =  myCommand.ExecuteNonQuery();
+        return affectedRows;
     }
 }

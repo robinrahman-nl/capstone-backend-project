@@ -11,8 +11,9 @@ public class AdminService
         _productRepository = productRepository;
     }
 
-    public void AddProduct(string productName, string description, double productPrice, int quantityInStock)
+    public bool AddProduct(string productName, string description, double productPrice, int quantityInStock)
     {   
-        _productRepository.InsertProduct(productName, description, productPrice, quantityInStock);
+        int result =_productRepository.InsertProduct(productName, description, productPrice, quantityInStock);
+        return result ==1;
     }
 }
