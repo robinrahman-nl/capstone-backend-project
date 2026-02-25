@@ -11,11 +11,11 @@ public class ProductRepository
     {
         _database = database;
     }
-
-    // ------------------------------------------------------------------
-    // METHOD: Retrieves full Product objects.
-    // ------------------------------------------------------------------
-
+    /*
+    ------------------------------------------------------------------
+    METHOD: Retrieves full Product objects.
+    ------------------------------------------------------------------
+    */
     public List<Product> GetAllProducts()
     {
         using var connection = _database.GetConnection();
@@ -53,7 +53,9 @@ ORDER BY
     }
 
     /*
+    ------------------------------------------------------------------
     Method: INSERT a new product in product catalogue. 
+    ------------------------------------------------------------------
     */
 
     public int InsertProduct(string productName, string description, double productPrice, int quantityInStock)
@@ -73,8 +75,50 @@ ORDER BY
         myCommand.Parameters.AddWithValue("@description", description);
         myCommand.Parameters.AddWithValue("@product_price", productPrice);
         myCommand.Parameters.AddWithValue("@quantity_in_stock", quantityInStock);
-        
-        int affectedRows =  myCommand.ExecuteNonQuery();
+
+        int affectedRows = myCommand.ExecuteNonQuery();
         return affectedRows;
     }
+
+    /*
+   ------------------------------------------------------------------
+   Method: Edit/ Update a product product in product catalogue. 
+   ------------------------------------------------------------------
+   */
+
+    public int UpdateProduct(int id, string productName, string description, double productPrice, int quantityInStock)
+    {
+        using var connection = _database.GetConnection();
+        connection.Open();
+
+        string query = @"
+        UPDATE 
+            product_catalogue
+        SET 
+            product_name = @product_name,
+            description = @description,
+            product_price = @product_price,
+            quantity_in_stock = @quantity_in_stock
+        WHERE 
+            product_id = @product_id;
+        ";
+
+        MySqlCommand myCommand = new MySqlCommand(query, connection);
+        myCommand.Parameters.AddWithValue("@product_name", productName);
+        myCommand.Parameters.AddWithValue("@description", description);
+        myCommand.Parameters.AddWithValue("@product_price", productPrice);
+        myCommand.Parameters.AddWithValue("@quantity_in_stock", quantityInStock);
+        myCommand.Parameters.AddWithValue("@product_id", id);
+
+        int affectedRows = myCommand.ExecuteNonQuery();
+        return affectedRows;
+
+    }
+
+
+
+
+
+
+
 }
