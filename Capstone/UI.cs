@@ -36,7 +36,7 @@ public class UI : IDisplayable
         [1] Show entire product catalogue.
         [2] Log in as a Customer.
         [3] Log in as an Admin.
-        [4] Exit.
+        [4] Exit Program.
         ");
     }
 
@@ -48,6 +48,8 @@ public class UI : IDisplayable
         [2] Edit a product in the product catalogue.
         [3] delete a product in the product catalogue.
         [4] Show all incoming orders. (complete or reject). 
+        [5] Go back to main menu. 
+        [6] Exit Program. 
         ");
     }
 
@@ -73,12 +75,13 @@ public class UI : IDisplayable
                     break;
 
                 case "2":
-                    Console.WriteLine("RunAdminMenu();");
+                    Console.WriteLine("RunCustomerMenu();");
                     break;
 
                 case "3":
-                    Console.WriteLine("RunCustomerMenu();");
+                    AdminMenu();
                     break;
+
 
                 case "4":
                     Console.WriteLine("Closing program. Goodbye");
@@ -107,27 +110,37 @@ public class UI : IDisplayable
         {
             DisplayAdminMenu();
             string userInputAdminnMenu = Console.ReadLine();
-            
+
             switch (userInputAdminnMenu)
             {
                 case "1":
-                AddProductFromInput();
-                break;
+                    AddProductFromInput();
+                    break;
 
                 case "2":
-                Console.WriteLine("EditProductFromInput()");
-                break;
+                    Console.WriteLine("EditProductFromInput()");
+                    break;
 
                 case "3":
-                Console.WriteLine("DeleteProductFromInput()");
-                break;
+                    Console.WriteLine("DeleteProductFromInput()");
+                    break;
 
                 case "4":
-                Console.WriteLine("ShowAllIncomingOrder()");
-                break;
+                    Console.WriteLine("ShowAllIncomingOrder()");
+                    break;
+                
+                case "5":
+                    Run();
+                    break;
 
-                default: Console.WriteLine("Invalid option please try again.");
-                break;
+                case "6":
+                    Console.WriteLine("Closing program goodbye.");
+                    isRunning = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid option please try again.");
+                    break;
             }
         }
     }
