@@ -1,16 +1,143 @@
 using System.Xml;
+using Capstone.Interfaces;
+using Capstone.Models;
 using Capstone.Services;
+using Capstone.Data;
 
 namespace Capstone;
 
-public class UI
+public class UI : IDisplayable
 {
     public readonly AdminService _adminService;
+    public readonly ProductService _productService;
 
-    public UI(AdminService adminService)
+
+
+    public UI(AdminService adminService, ProductService productService)
     {
         _adminService = adminService;
+        _productService = productService;
     }
+
+    /*
+    ==========================================================================================
+    Method: Display Main Menu. 
+    ==========================================================================================
+    */
+
+    public void DisplayMainMenu()
+    {
+        Console.WriteLine(@"
+        =================================
+          Welcome to pharmacyshop.com 
+        =================================
+        
+        Please select an option
+        [1] Show entire product catalogue.
+        [2] Log in as a Customer.
+        [3] Log in as an Admin.
+        [4] Exit.
+        ");
+    }
+
+    public void DisplayAdminMenu()
+    {
+        Console.WriteLine(@"
+        Please select an option
+        [1] Add a product to the product catalogue.
+        [2] Edit a product in the product catalogue.
+        [3] delete a product in the product catalogue.
+        [4] Show all incoming orders. (complete or reject). 
+        ");
+    }
+
+
+    /*
+    ==========================================================================================
+    Method: Run Main Menu. 
+    ==========================================================================================
+    */
+
+    public void Run()
+    {
+        bool isRunning = true;
+        while (isRunning)
+        {
+            DisplayMainMenu();
+            string userInputMainMenu = Console.ReadLine();
+
+            switch (userInputMainMenu)
+            {
+                case "1":
+                    ShowEntireProductCatalogue();
+                    break;
+
+                case "2":
+                    Console.WriteLine("RunAdminMenu();");
+                    break;
+
+                case "3":
+                    Console.WriteLine("RunCustomerMenu();");
+                    break;
+
+                case "4":
+                    Console.WriteLine("Closing program. Goodbye");
+                    isRunning = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
+
+
+
+    /*
+    ==========================================================================================
+    Method: Run Admin menu. 
+    ==========================================================================================
+    */
+
+    public void AdminMenu()
+    {
+        bool isRunning = true;
+        while (isRunning)
+        {
+            DisplayAdminMenu();
+            string userInputAdminnMenu = Console.ReadLine();
+            
+            switch (userInputAdminnMenu)
+            {
+                case "1":
+                AddProductFromInput();
+                break;
+
+                case "2":
+                Console.WriteLine("EditProductFromInput()");
+                break;
+
+                case "3":
+                Console.WriteLine("DeleteProductFromInput()");
+                break;
+
+                case "4":
+                Console.WriteLine("ShowAllIncomingOrder()");
+                break;
+
+                default: Console.WriteLine("Invalid option please try again.");
+                break;
+            }
+        }
+    }
+
+
+    /*
+    ==========================================================================================
+    Method: Add product by Admin. 
+    ==========================================================================================
+    */
 
     public void AddProductFromInput()
     {
@@ -39,9 +166,33 @@ public class UI
 
         bool succes = _adminService.AddProduct(productNameInput, descriptionInput, productPrice, quantity);
         if (succes)
-        Console.WriteLine("Product succesfully added.");
+            Console.WriteLine("Product succesfully added.");
         else
-        Console.WriteLine("Failed to add product.");       
-        
+            Console.WriteLine("Product adding failed.");
     }
+
+    /*
+    ==========================================================================================
+    Method: Show the entire product catalogue. 
+    ==========================================================================================
+    */
+
+    public void ShowEntireProductCatalogue()
+    {
+        var products = _productService.GetAllProducts();
+
+        if (products.Count == 0)
+        {
+            Console.WriteLine("No products found.");
+            return;
+        }
+
+        Console.WriteLine("\n--- Product Catalogue ---");
+        foreach (var product in products)
+        {
+            Console.WriteLine(product);
+        }
+        Console.WriteLine("--------------------------\n");
+    }
+
 }
