@@ -1,10 +1,11 @@
-
-// ==================================================================
-// 1. Test in Program.cs: test tostring method for user object. 
-// Purpose: Validate User object behavior and ToString/DisplayDetails.
-// Also verify that UserRepository correctly retrieves
-// and maps database records into User objects.
-// ==================================================================
+/*
+==================================================================
+Test 1. in Program.cs: test tostring method for user object. 
+Purpose: Validate User object behavior and ToString/DisplayDetails.
+Also verify that UserRepository correctly retrieves
+and maps database records into User objects.
+==================================================================
+*/
 Database database1 = new Database();
 UserRepository userRepository1 = new UserRepository(database1);
 
@@ -15,11 +16,13 @@ foreach (var item in userList1)
     Console.WriteLine(item);
 }
 
-// ==================================================================
-// 2. Test in Program.cs: 
-// Retrieve Admin objects from database via AdminRepository
-// and display formatted output.
-// ==================================================================
+/*
+==================================================================
+2. Test in Program.cs: 
+Retrieve Admin objects from database via AdminRepository
+and display formatted output.
+==================================================================
+*/
 Database database1 = new Database();
 UserRepository userRepository1 = new UserRepository(database1);
 
@@ -40,15 +43,15 @@ foreach (var item in adminLIst1)
 // and verify correct object mapping and ToString() output formatting.
 // Validates data pipeline: Database → Repository → Domain Model → Console.
 // ==================================================================
- Database database1 = new Database();
-        ProductRepository productRepository1 = new ProductRepository(database1);
+Database database1 = new Database();
+ProductRepository productRepository1 = new ProductRepository(database1);
 
-        List <Product> productsList1 = productRepository1.GetAllProducts();
+List<Product> productsList1 = productRepository1.GetAllProducts();
 
-        foreach (var item in productsList1)
-        {
-            Console.WriteLine(item);
-        }
+foreach (var item in productsList1)
+{
+    Console.WriteLine(item);
+}
 
 // ==================================================================
 // TEST 4: 
@@ -60,14 +63,14 @@ foreach (var item in adminLIst1)
 // ==================================================================
 
 Database database1 = new Database();
-        CustomerRepository customerRepository1 = new CustomerRepository(database1);
+CustomerRepository customerRepository1 = new CustomerRepository(database1);
 
-        List <Customer> customerList1 = customerRepository1.GetAllCustomers();
+List<Customer> customerList1 = customerRepository1.GetAllCustomers();
 
-        foreach (var item in customerList1)
-        {
-            Console.WriteLine(item);
-        }
+foreach (var item in customerList1)
+{
+    Console.WriteLine(item);
+}
 
 // ==================================================================
 // TEST 5: 
@@ -86,5 +89,125 @@ foreach (var item in orderDetailsList1)
 {
     Console.WriteLine(item);
 }
-    
+
+/*
+####################################################################################################
+Write in Database
+####################################################################################################
+*/
+
+/* 
+==================================================================
+Source: StackOverflow
+https://stackoverflow.com/questions/23301582/how-do-i-to-insert-data-into-an-sql-table-using-c-sharp-as-well-as-implement-an
+
+==================================================================
+*/
+
+
+
+
+/* 
+==================================================================
+TEST nr: 
+In program.cs
+Repository-level INSERT validation
+Verifies that InsertProduct() writes a new row to product_catalogue.
+Hard coded.
+==================================================================
+*/
+
+Database database1 = new Database();
+ProductRepository productRepository3 = new ProductRepository(database1);
+
+productRepository3.InsertProduct();
+
+/* 
+==================================================================
+TEST nr: 
+In program.cs
+Repository-level INSERT validation
+Verifies that InsertProduct() writes a new row to product_catalogue.
+With parameters. 
+==================================================================
+*/
+
+        Database database1 = new Database();
+ProductRepository productRepository3 = new ProductRepository(database1);
+
+productRepository3.InsertProduct("test4", "test4", 999, 0);
+
+/* 
+==================================================================
+TEST nr: 
+In program.cs
+Validate AdminService.AddProduct() inserts a new product via ProductRepository
+==================================================================
+*/
+
+
+        Database database1 = new Database();
+ProductRepository productRepository3 = new ProductRepository(database1);
+AdminService adminService3 = new AdminService(productRepository3);
+
+adminService3.AddProduct("test5", "test5", 999, 0);
+
+/* 
+==================================================================
+TEST nr: 
+In program.cs
+        
+        TEST: End-to-End Add Product Flow (UI → Service → Repository)
+        
+        Purpose:
+        - Manually validate full layered architecture.
+        - Collect user input via console.
+        - Pass data to AdminService.
+        - Verify that ProductRepository inserts a new record into the database.
+        
+        Scope:
+        - Integration-level test (not production UI yet).
+        - Confirms correct wiring of dependencies and data flow.
+     
+==================================================================
+*/
+ Database database1 = new Database();
+        ProductRepository productRepository3 = new ProductRepository(database1);
+        AdminService adminService3 = new AdminService(productRepository3);
+        UI uI3 = new UI(adminService3);
+        
+
+
+        Console.WriteLine("Enter product name.");
+        string productNameInput = Console.ReadLine();
+
+        Console.WriteLine("Enter product description");
+        string descriptionInput = Console.ReadLine();
+
+        double productPrice;
+
+        while (true)
+        {
+            Console.WriteLine("Enter product price:");
+            string input = Console.ReadLine();
+
+            if (double.TryParse(input, out productPrice))
+                break;
+
+            Console.WriteLine("Invalid price. Please enter a valid number.");
+        }
+
+        int quantity;
+
+        Console.WriteLine("Enter product quantity:");
+
+        while (!int.TryParse(Console.ReadLine(), out quantity))
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number:");
+        }
+
+
+
+        adminService3.AddProduct(productNameInput, descriptionInput, productPrice, quantity);
+
 
