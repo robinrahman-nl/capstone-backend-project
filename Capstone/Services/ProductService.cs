@@ -16,6 +16,3 @@ public class ProductService
         return _productRepository.GetAllProducts();
     }
 }
-
-
-
