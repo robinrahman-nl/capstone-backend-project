@@ -16,4 +16,10 @@ public class AdminService
         int result =_productRepository.InsertProduct(productName, description, productPrice, quantityInStock);
         return result ==1;
     }
+
+    public bool UpdateProduct(int id, string productName, string description, double productPrice, int quantityInStock)
+    {
+        int result = _productRepository.UpdateProduct(id, productName, description, productPrice, quantityInStock);
+        return result > 0;
+    }
 }
