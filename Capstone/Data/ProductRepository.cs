@@ -112,7 +112,31 @@ ORDER BY
 
         int affectedRows = myCommand.ExecuteNonQuery();
         return affectedRows;
+    }
 
+     /*
+   ------------------------------------------------------------------
+   Method: Delete a product product in product catalogue. 
+   ------------------------------------------------------------------
+   */
+    public int DeleteProduct(int id)
+    {
+        using var connection = _database.GetConnection();
+        connection.Open();
+
+        string query = @"
+        DELETE 
+        FROM 
+        product_catalogue
+        WHERE
+        product_id = @product_id;
+        ";
+
+        MySqlCommand myCommand = new MySqlCommand(query, connection);
+        myCommand.Parameters.AddWithValue("@product_id", id);
+        
+        int affectedRows = myCommand.ExecuteNonQuery();
+        return affectedRows;
     }
 
 

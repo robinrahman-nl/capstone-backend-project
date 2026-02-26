@@ -33,9 +33,9 @@ public class UI : IDisplayable
         =================================
         
         Please select an option
-        [1] Show entire product catalogue.
-        [2] Log in as a Customer.
-        [3] Log in as an Admin.
+        [1] Show entire product catalogue. (Working)
+        [2] Log in as a Customer. 
+        [3] Log in as an Admin. (working)
         [4] Exit Program.
         ");
     }
@@ -44,12 +44,11 @@ public class UI : IDisplayable
     {
         Console.WriteLine(@"
         Please select an option
-        [1] Add a product to the product catalogue.
-        [2] Edit a product in the product catalogue.
+        [1] Add a product to the product catalogue. (working)
+        [2] Edit a product in the product catalogue. (working)
         [3] delete a product in the product catalogue.
-        [4] Show all incoming orders. (complete or reject). 
-        [5] Go back to main menu. 
-        [6] Exit Program. 
+        [4] Show all incoming orders. 
+        [5] Go back to main menu. (working)
         ");
     }
 
@@ -118,23 +117,19 @@ public class UI : IDisplayable
                     break;
 
                 case "2":
-                    Console.WriteLine("EditProductFromInput()");
+                    UpdateProductFromInput();
                     break;
 
                 case "3":
-                    Console.WriteLine("DeleteProductFromInput()");
+                    DeleteProductFromInput();
                     break;
 
                 case "4":
                     Console.WriteLine("ShowAllIncomingOrder()");
                     break;
-                
-                case "5":
-                    Run();
-                    break;
 
-                case "6":
-                    Console.WriteLine("Closing program goodbye.");
+                case "5":
+                    Console.WriteLine("Returning to main menu.");
                     isRunning = false;
                     break;
 
@@ -146,9 +141,35 @@ public class UI : IDisplayable
     }
 
 
+
+
     /*
     ==========================================================================================
-    Method: Add product by Admin. 
+    Method: Show the entire product catalogue. 
+    ==========================================================================================
+    */
+
+    public void ShowEntireProductCatalogue()
+    {
+        var products = _productService.GetAllProducts();
+
+        if (products.Count == 0)
+        {
+            Console.WriteLine("No products found.");
+            return;
+        }
+
+        Console.WriteLine("\n--- Product Catalogue ---");
+        foreach (var product in products)
+        {
+            Console.WriteLine(product);
+        }
+        Console.WriteLine("--------------------------\n");
+    }
+
+    /*
+    ==========================================================================================
+    Method: Add product by Admin. [One product]
     ==========================================================================================
     */
 
@@ -185,27 +206,76 @@ public class UI : IDisplayable
     }
 
     /*
+   ==========================================================================================
+   Method: Update product by Admin. 
+   ==========================================================================================
+   */
+    public void UpdateProductFromInput()
+    {
+        // Ask for product id that admin wants to update.
+        int productIdInput;
+        Console.WriteLine("Enter the Id of the product that you want to update.");
+
+        while (!int.TryParse(Console.ReadLine(), out productIdInput))
+        {
+            Console.WriteLine("Invalid input. Please enter a valid number:");
+        }
+
+        // Ask for product name to update.
+        Console.WriteLine("Enter product name.");
+        string productNameInput = Console.ReadLine();
+
+        // Ask for product description to update. 
+        Console.WriteLine("Enter product description to update.");
+        string descriptionInput = Console.ReadLine();
+
+        // Ask for Product price to update. 
+        double productPriceInput;
+        Console.WriteLine("Enter product price to update.");
+        while (!double.TryParse(Console.ReadLine(), out productPriceInput))
+        {
+            Console.WriteLine("Invalid price. Please enter a valid number.");
+        }
+        
+        // Ask for product quantity to update.
+        int productQuantity;
+        Console.WriteLine("Enter product quantity to update.");
+        while (!int.TryParse(Console.ReadLine(), out productQuantity))
+        {
+            Console.WriteLine("Invalid price. Please enter a valid number.");
+        }
+        
+        bool succes = _adminService.UpdateProduct(productIdInput, productNameInput, descriptionInput, productPriceInput, productQuantity);
+        if (succes)
+            Console.WriteLine("Product succesfully updated.");
+        else
+            Console.WriteLine("Product update failed.");
+
+
+    }
+
+    /*
     ==========================================================================================
-    Method: Show the entire product catalogue. 
+    Method: Delete a product by Admin. [One product]
     ==========================================================================================
     */
 
-    public void ShowEntireProductCatalogue()
+    public void DeleteProductFromInput()
     {
-        var products = _productService.GetAllProducts();
+        // Ask for product id to delete.
+        int productIdInput;
+        Console.WriteLine("Enter the Id of the product that you want to update.");
 
-        if (products.Count == 0)
+        while (!int.TryParse(Console.ReadLine(), out productIdInput))
         {
-            Console.WriteLine("No products found.");
-            return;
+            Console.WriteLine("Invalid Input Please enter a valid number");
         }
 
-        Console.WriteLine("\n--- Product Catalogue ---");
-        foreach (var product in products)
-        {
-            Console.WriteLine(product);
-        }
-        Console.WriteLine("--------------------------\n");
+        bool succes = _adminService.DeleteProduct(productIdInput);
+
+        if (succes)
+            Console.WriteLine("Product succesfully deleted.");
+        else
+            Console.WriteLine("Product deletion failed.");
     }
-
 }

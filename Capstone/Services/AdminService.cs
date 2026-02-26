@@ -22,4 +22,10 @@ public class AdminService
         int result = _productRepository.UpdateProduct(id, productName, description, productPrice, quantityInStock);
         return result > 0;
     }
+
+    public bool DeleteProduct(int id)
+    {
+        int result = _productRepository.DeleteProduct(id);
+        return result > 0;
+    }
 }
