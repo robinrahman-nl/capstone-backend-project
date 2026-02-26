@@ -3,6 +3,7 @@ using Capstone.Interfaces;
 using Capstone.Models;
 using Capstone.Services;
 using Capstone.Data;
+using System.Linq;
 
 namespace Capstone;
 
@@ -48,6 +49,7 @@ public class UI : IDisplayable
 
         Console.WriteLine(@"
         Please select an option
+        [0] Show entire product catalogue.
         [1] Add a product to the product catalogue. (working)
         [2] Edit a product in the product catalogue. (working)
         [3] Delete a product in the product catalogue.
@@ -116,6 +118,11 @@ public class UI : IDisplayable
 
             switch (userInputAdminnMenu)
             {
+
+                case "0":
+                    ShowEntireProductCatalogue();
+                    break;
+
                 case "1":
                     AddProductFromInput();
                     break;
@@ -298,12 +305,37 @@ public class UI : IDisplayable
             Console.WriteLine("Invalid input. Please enter a valid number or 'b' to go back:");
         }
 
+        // Fetch product to show details before deletion
+        var products = _productService.GetAllProducts();
+        var product = products.FirstOrDefault(p => p.ProductId == productIdInput);
+
+        if (product == null)
+        {
+            Console.WriteLine("Product not found.");
+            Pause();
+            return;
+        }
+
+        Console.WriteLine("\nYou are about to delete the following product:");
+        Console.WriteLine(product);
+        Console.WriteLine("Are you sure you want to delete this product? (y/n)");
+
+        string confirmation = Console.ReadLine()?.ToLower();
+
+        if (confirmation != "y")
+        {
+            Console.WriteLine("Deletion cancelled.");
+            Pause();
+            return;
+        }
+
         bool succes = _adminService.DeleteProduct(productIdInput);
 
         if (succes)
             Console.WriteLine("Product successfully deleted.");
         else
             Console.WriteLine("Product deletion failed.");
+
         Pause();
     }
 
