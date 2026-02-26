@@ -8,12 +8,14 @@ class Program
 {
     static void Main(string[] args)
     {
-
         Database database1 = new Database();
-        ProductRepository productRepository3 = new ProductRepository(database1);
-        AdminService adminService3 = new AdminService(productRepository3);
-        UI uI3 = new UI(adminService3);
 
-        uI3.AddProductFromInput();
+        ProductRepository productRepository = new ProductRepository(database1);
+        AdminService adminService = new AdminService(productRepository);
+        ProductService productService = new ProductService(productRepository);
+
+        UI ui = new UI(adminService, productService);
+
+        ui.Run();
     }
 }
