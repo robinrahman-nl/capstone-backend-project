@@ -27,6 +27,8 @@ public class UI : IDisplayable
 
     public void DisplayMainMenu()
     {
+        Console.Clear();
+
         Console.WriteLine(@"
         =================================
           Welcome to pharmacyshop.com 
@@ -42,11 +44,13 @@ public class UI : IDisplayable
 
     public void DisplayAdminMenu()
     {
+        Console.Clear();
+
         Console.WriteLine(@"
         Please select an option
         [1] Add a product to the product catalogue. (working)
         [2] Edit a product in the product catalogue. (working)
-        [3] delete a product in the product catalogue.
+        [3] Delete a product in the product catalogue.
         [4] Show all incoming orders. 
         [5] Go back to main menu. (working)
         ");
@@ -165,6 +169,7 @@ public class UI : IDisplayable
             Console.WriteLine(product);
         }
         Console.WriteLine("--------------------------\n");
+        Pause();
     }
 
     /*
@@ -203,6 +208,7 @@ public class UI : IDisplayable
             Console.WriteLine("Product succesfully added.");
         else
             Console.WriteLine("Product adding failed.");
+            Pause();
     }
 
     /*
@@ -212,13 +218,23 @@ public class UI : IDisplayable
    */
     public void UpdateProductFromInput()
     {
-        // Ask for product id that admin wants to update.
         int productIdInput;
-        Console.WriteLine("Enter the Id of the product that you want to update.");
+        Console.WriteLine("Enter the Id of the product that you want to update (or type 'b' to go back):");
 
-        while (!int.TryParse(Console.ReadLine(), out productIdInput))
+        while (true)
         {
-            Console.WriteLine("Invalid input. Please enter a valid number:");
+            string input = Console.ReadLine();
+
+            if (input?.ToLower() == "b")
+            {
+                Console.WriteLine("Operation cancelled. Returning to admin menu...");
+                return;
+            }
+
+            if (int.TryParse(input, out productIdInput))
+                break;
+
+            Console.WriteLine("Invalid input. Please enter a valid number or 'b' to go back:");
         }
 
         // Ask for product name to update.
@@ -236,7 +252,7 @@ public class UI : IDisplayable
         {
             Console.WriteLine("Invalid price. Please enter a valid number.");
         }
-        
+
         // Ask for product quantity to update.
         int productQuantity;
         Console.WriteLine("Enter product quantity to update.");
@@ -244,12 +260,13 @@ public class UI : IDisplayable
         {
             Console.WriteLine("Invalid price. Please enter a valid number.");
         }
-        
+
         bool succes = _adminService.UpdateProduct(productIdInput, productNameInput, descriptionInput, productPriceInput, productQuantity);
         if (succes)
             Console.WriteLine("Product succesfully updated.");
         else
             Console.WriteLine("Product update failed.");
+            Pause();
 
 
     }
@@ -262,20 +279,42 @@ public class UI : IDisplayable
 
     public void DeleteProductFromInput()
     {
-        // Ask for product id to delete.
         int productIdInput;
-        Console.WriteLine("Enter the Id of the product that you want to update.");
+        Console.WriteLine("Enter the Id of the product that you want to delete (or type 'b' to go back):");
 
-        while (!int.TryParse(Console.ReadLine(), out productIdInput))
+        while (true)
         {
-            Console.WriteLine("Invalid Input Please enter a valid number");
+            string input = Console.ReadLine();
+
+            if (input?.ToLower() == "b")
+            {
+                Console.WriteLine("Operation cancelled. Returning to admin menu...");
+                return;
+            }
+
+            if (int.TryParse(input, out productIdInput))
+                break;
+
+            Console.WriteLine("Invalid input. Please enter a valid number or 'b' to go back:");
         }
 
         bool succes = _adminService.DeleteProduct(productIdInput);
 
         if (succes)
-            Console.WriteLine("Product succesfully deleted.");
+            Console.WriteLine("Product successfully deleted.");
         else
             Console.WriteLine("Product deletion failed.");
+        Pause();
+    }
+
+    /*
+    ==========================================================================================
+    Helper Method: Pause screen
+    ==========================================================================================
+    */
+    private void Pause()
+    {
+        Console.WriteLine("\nPress any key to go back to menu.");
+        Console.ReadKey();
     }
 }
