@@ -4,10 +4,6 @@
 
 Console-based pharmacy store application built with **C# (.NET)** and **MySQL**.
 
-This project demonstrates a clean layered architecture with clear separation of concerns between:
-
-The goal of this project is to apply backend architecture principles in a structured and maintainable way.
-
 ---
 
 ## Architecture
