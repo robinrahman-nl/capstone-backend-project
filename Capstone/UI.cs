@@ -11,6 +11,7 @@ public class UI : IDisplayable
 {
     public readonly AdminService _adminService;
     public readonly ProductService _productService;
+    // public readonly CustomerService _customerService;
 
 
 
@@ -18,6 +19,7 @@ public class UI : IDisplayable
     {
         _adminService = adminService;
         _productService = productService;
+        // _customerService = customerService;
     }
 
     /*
@@ -36,12 +38,19 @@ public class UI : IDisplayable
         =================================
         
         Please select an option
-        [1] Show entire product catalogue. (Working)
-        [2] Log in as a Customer. 
-        [3] Log in as an Admin. (working)
-        [4] Exit Program.
+
+        [1] Show entire product catalogue. {Working}
+        [2] Log in as a Customer. {working}
+        [3] Log in as an Admin. {working}
+        [4] Exit Program. {working}
         ");
     }
+
+    /*
+    ==========================================================================================
+    Method: Display Admin Menu. 
+    ==========================================================================================
+    */
 
     public void DisplayAdminMenu()
     {
@@ -49,14 +58,17 @@ public class UI : IDisplayable
 
         Console.WriteLine(@"
         Please select an option
-        [0] Show entire product catalogue.
-        [1] Add a product to the product catalogue. (working)
-        [2] Edit a product in the product catalogue. (working)
-        [3] Delete a product in the product catalogue.
+
+        [0] Show entire product catalogue. {working}
+        [1] Add a product to the product catalogue. {working}
+        [2] Edit a product in the product catalogue. {working}
+        [3] Delete a product in the product catalogue. {working}
         [4] Show all incoming orders. 
-        [5] Go back to main menu. (working)
+        [5] Go back to main menu. {working}
         ");
     }
+
+
 
 
     /*
@@ -80,7 +92,7 @@ public class UI : IDisplayable
                     break;
 
                 case "2":
-                    Console.WriteLine("RunCustomerMenu();");
+                    RunCustomerMenu();
                     break;
 
                 case "3":
@@ -215,7 +227,7 @@ public class UI : IDisplayable
             Console.WriteLine("Product succesfully added.");
         else
             Console.WriteLine("Product adding failed.");
-            Pause();
+        Pause();
     }
 
     /*
@@ -273,7 +285,7 @@ public class UI : IDisplayable
             Console.WriteLine("Product succesfully updated.");
         else
             Console.WriteLine("Product update failed.");
-            Pause();
+        Pause();
 
 
     }
@@ -316,6 +328,7 @@ public class UI : IDisplayable
             return;
         }
 
+        // User confirmation before deletion. 
         Console.WriteLine("\nYou are about to delete the following product:");
         Console.WriteLine(product);
         Console.WriteLine("Are you sure you want to delete this product? (y/n)");
@@ -329,6 +342,7 @@ public class UI : IDisplayable
             return;
         }
 
+        // Delete product. 
         bool succes = _adminService.DeleteProduct(productIdInput);
 
         if (succes)
@@ -336,6 +350,107 @@ public class UI : IDisplayable
         else
             Console.WriteLine("Product deletion failed.");
 
+        Pause();
+    }
+
+    /*
+==========================================================================================
+Method: Display Customer Menu. 
+==========================================================================================
+*/
+    public void DisplayCustomerMenu()
+    {
+        Console.Clear();
+
+        Console.WriteLine(@"
+        Please select an option
+        [0] Show entire product catalogue. {working}
+        [1] View details of a specific product (by ID). 
+        [2] Add product to cart.
+        [3] View cart.
+        [4] Place order.
+        [5] Go back to main menu. 
+        ");
+    }
+
+    /*
+    ==========================================================================================
+    Method: Customer Menu.
+    ==========================================================================================
+    */
+
+    public void RunCustomerMenu()
+    {
+        bool isRunning = true;
+        while (isRunning)
+        {
+            DisplayCustomerMenu();
+            string userInputCustomerMenu = Console.ReadLine();
+
+            switch (userInputCustomerMenu)
+            {
+                case "0":
+                    ShowEntireProductCatalogue();
+                    break;
+                
+                case "1":
+                    ShowProductById();
+                    break;
+
+                case "2":
+                    Console.WriteLine("AddProductToCart()");
+                    break;
+                
+                case "3":
+                    Console.WriteLine("ViewCart()");
+                    break;
+                
+                case "4":
+                    Console.WriteLine("PlaceOrder()");
+                    break;
+
+
+                case "5":
+                    Console.WriteLine("Returning to main menu.");
+                    isRunning = false;
+                    break;
+
+                default:
+                    Console.WriteLine("Invalid option please try again.");
+                    break;
+            }
+        }
+    }
+
+      /*
+    ==========================================================================================
+    Method: Show a specific product from catalogue given id.
+    ==========================================================================================
+    */
+    public void ShowProductById()
+    {
+        int productIdInput;
+        Console.WriteLine("Enter the Id of the product that you want to show or press 'b' to go back to customer menu.");
+
+        while (true) 
+        {
+            string input = Console.ReadLine();
+
+            if (input?.ToLower() == "b")
+            {
+                Console.WriteLine("Operation cancelled. Returning to customer menu...");
+                return;
+            }
+
+            if (int.TryParse(input, out productIdInput))
+                break;
+
+            Console.WriteLine("Invalid input. Please enter a valid number or 'b' to go back:");
+        }
+
+        var productList = _productService.GetAllProducts();
+        Product product = productList.FirstOrDefault(product => product.ProductId == productIdInput);
+      Console.WriteLine(product);
         Pause();
     }
 
