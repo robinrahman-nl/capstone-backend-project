@@ -4,6 +4,7 @@ using Capstone.Models;
 using Capstone.Services;
 using Capstone.Data;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Capstone;
 
@@ -11,15 +12,17 @@ public class UI : IDisplayable
 {
     public readonly AdminService _adminService;
     public readonly ProductService _productService;
-    // public readonly CustomerService _customerService;
+    private string _currentCustomerUserName;
+    private int _currentCustomerId;
+    public readonly CustomerService _customerService;
 
 
 
-    public UI(AdminService adminService, ProductService productService)
+    public UI(AdminService adminService, ProductService productService, CustomerService customerService)
     {
         _adminService = adminService;
         _productService = productService;
-        // _customerService = customerService;
+        _customerService = customerService;
     }
 
     /*
@@ -354,10 +357,10 @@ public class UI : IDisplayable
     }
 
     /*
-==========================================================================================
-Method: Display Customer Menu. 
-==========================================================================================
-*/
+    ==========================================================================================
+    Method: Display Customer Menu. 
+    ==========================================================================================
+    */
     public void DisplayCustomerMenu()
     {
         Console.Clear();
@@ -365,8 +368,8 @@ Method: Display Customer Menu.
         Console.WriteLine(@"
         Please select an option
         [0] Show entire product catalogue. {working}
-        [1] View details of a specific product (by ID). 
-        [2] Add product to cart.
+        [1] View details of a specific product (by ID). {working}
+        [2] Add product to cart. 
         [3] View cart.
         [4] Place order.
         [5] Go back to main menu. 
@@ -381,6 +384,26 @@ Method: Display Customer Menu.
 
     public void RunCustomerMenu()
     {
+        // ----------------------------------------------------------------------------------------
+        // Set current customer id
+        // Ask for customer username and store it internally.
+        Console.WriteLine("Please Enter your username");
+        _currentCustomerUserName = Console.ReadLine();
+
+        // Get current customer Id.
+        _currentCustomerId = _customerService.getCustomerIdByUserName(_currentCustomerUserName);
+
+        if (_currentCustomerId  == -1)
+        {
+            Console.WriteLine("User name not found. Returning to main menu.");
+            Pause();
+            return; // exit customer menu. 
+        }
+
+        // ----------------------------------------------------------------------------------------
+        
+
+
         bool isRunning = true;
         while (isRunning)
         {
@@ -392,7 +415,7 @@ Method: Display Customer Menu.
                 case "0":
                     ShowEntireProductCatalogue();
                     break;
-                
+
                 case "1":
                     ShowProductById();
                     break;
@@ -400,11 +423,11 @@ Method: Display Customer Menu.
                 case "2":
                     Console.WriteLine("AddProductToCart()");
                     break;
-                
+
                 case "3":
                     Console.WriteLine("ViewCart()");
                     break;
-                
+
                 case "4":
                     Console.WriteLine("PlaceOrder()");
                     break;
@@ -422,7 +445,7 @@ Method: Display Customer Menu.
         }
     }
 
-      /*
+    /*
     ==========================================================================================
     Method: Show a specific product from catalogue given id.
     ==========================================================================================
@@ -432,7 +455,7 @@ Method: Display Customer Menu.
         int productIdInput;
         Console.WriteLine("Enter the Id of the product that you want to show or press 'b' to go back to customer menu.");
 
-        while (true) 
+        while (true)
         {
             string input = Console.ReadLine();
 
@@ -450,8 +473,30 @@ Method: Display Customer Menu.
 
         var productList = _productService.GetAllProducts();
         Product product = productList.FirstOrDefault(product => product.ProductId == productIdInput);
-      Console.WriteLine(product);
+        Console.WriteLine(product);
         Pause();
+    }
+
+    /*
+    ==========================================================================================
+    Test Method: Get customer id by user name.
+    ==========================================================================================
+    */
+    public int GetCustomerIdByUserNameInput()
+    {
+
+        // Ask for customer username and store it internally.
+        Console.WriteLine("Please Enter your username");
+        _currentCustomerUserName = Console.ReadLine();
+
+        // Get current customer Id.
+        _currentCustomerId = _customerService.getCustomerIdByUserName(_currentCustomerUserName);
+
+        if (_currentCustomerId == -1)
+        {
+            Console.WriteLine("Invalid customer id. please enter a valid customer id. or press 'b' to go back to main / customer menu.");
+        }
+        return _currentCustomerId;
     }
 
     /*
