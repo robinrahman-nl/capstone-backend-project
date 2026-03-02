@@ -71,7 +71,7 @@ ORDER BY od.detail_id;
 
             Product product = new Product(productId, productName, description, productPrice, quantityInStock);
 
-            OrderDetails orderDetail = new OrderDetails(detailId, order, product, amount, totalPrice);
+            OrderDetails orderDetail = new OrderDetails(detailId, order.OrderId, product.ProductId, amount, totalPrice);
 
             details.Add(orderDetail);
         }

@@ -6,11 +6,13 @@ public class CustomerService
 {
     public readonly ProductRepository _productRepository;
     public readonly CustomerRepository _customerRepository;
+    public readonly OrderRepository _orderRepository;
 
-    public CustomerService(ProductRepository productRepository, CustomerRepository customerRepository)
+    public CustomerService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository )
     {
         _productRepository = productRepository;
         _customerRepository = customerRepository;
+        _orderRepository = orderRepository;
     }
 
 
@@ -26,4 +28,77 @@ public class CustomerService
 
         return customer.CustomerId;
     }
+
+
+/*
+==========================================================================================
+Method: Get existing CART order for customer or create one if co CART exists for this customer id.
+------------------------------------------------------------------------------------------
+- Customer always have an active CART before products can be added.
+- If a CART already exists → return CART.
+- If no CART exists for this customer id → create a new CART and return that CART.
+==========================================================================================
+*/
+    public Order GetOrCreateCart(int customerId)
+{
+    Order cart = _orderRepository.GetCartByCustomerId(customerId);
+
+    if (cart != null)
+        return cart;
+
+    // If no cart exists → create one
+    _orderRepository.CreateCart(customerId);
+
+    // Retrieve newly created cart
+    return _orderRepository.GetCartByCustomerId(customerId);
+}
+
+/*
+==========================================================================================
+Method: Add product to customer's CART
+==========================================================================================
+*/
+public bool AddProductToCart(int customerId, int productId, int quantity)
+{
+    // Check if CART exists
+    Order cart = GetOrCreateCart(customerId);
+
+    // Get product by product id. 
+    var products = _productRepository.GetAllProducts();
+    var product = products.FirstOrDefault(p => p.ProductId == productId);
+
+    if (product == null)
+        return false;
+
+    double unitPrice = product.ProductPrice;
+
+    // Check if product exist already in cart. Else create new CART (order_detal row) in order_details table. 
+    OrderDetails existingDetail =
+        _orderRepository.GetOrderDetail(cart.OrderId, productId);
+
+    if (existingDetail != null)
+    {
+        int newAmount = existingDetail.Amount + quantity;
+        double newTotal = newAmount * unitPrice;
+
+        _orderRepository.UpdateOrderDetail(
+            existingDetail.DetailId,
+            newAmount,
+            newTotal);
+    }
+    else
+    {
+        double totalPrice = quantity * unitPrice;
+
+        _orderRepository.InsertOrderDetail(
+            cart.OrderId,
+            productId,
+            quantity,
+            totalPrice);
+    }
+
+    return true;
+}
+
+
 }

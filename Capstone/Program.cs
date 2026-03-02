@@ -13,8 +13,11 @@ class Program
         ProductRepository productRepository = new ProductRepository(database1);
         AdminService adminService = new AdminService(productRepository);
         ProductService productService = new ProductService(productRepository);
+        CustomerRepository customerRepository = new CustomerRepository(database1);
+        OrderRepository orderRepository = new OrderRepository(database1);
+        CustomerService customerService = new CustomerService(productRepository, customerRepository, orderRepository);  
 
-        UI ui = new UI(adminService, productService);
+        UI ui = new UI(adminService, productService, customerService, orderRepository);
 
         ui.Run();
     }

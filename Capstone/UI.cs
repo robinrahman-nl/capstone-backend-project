@@ -15,14 +15,16 @@ public class UI : IDisplayable
     private string _currentCustomerUserName;
     private int _currentCustomerId;
     public readonly CustomerService _customerService;
+    public readonly OrderRepository _orderRepository;
 
 
 
-    public UI(AdminService adminService, ProductService productService, CustomerService customerService)
+    public UI(AdminService adminService, ProductService productService, CustomerService customerService, OrderRepository orderRepository)
     {
         _adminService = adminService;
         _productService = productService;
         _customerService = customerService;
+        _orderRepository = orderRepository;
     }
 
     /*
@@ -421,7 +423,7 @@ public class UI : IDisplayable
                     break;
 
                 case "2":
-                    Console.WriteLine("AddProductToCart()");
+                    AddProductToCartFromInput();
                     break;
 
                 case "3":
@@ -476,28 +478,41 @@ public class UI : IDisplayable
         Console.WriteLine(product);
         Pause();
     }
-
     /*
     ==========================================================================================
-    Test Method: Get customer id by user name.
+    Method: Add product to cart or create new CART from customer input. 
     ==========================================================================================
     */
-    public int GetCustomerIdByUserNameInput()
+    public void AddProductToCartFromInput()
+{
+    Console.WriteLine("Enter Product ID:");
+    if (!int.TryParse(Console.ReadLine(), out int productId))
     {
-
-        // Ask for customer username and store it internally.
-        Console.WriteLine("Please Enter your username");
-        _currentCustomerUserName = Console.ReadLine();
-
-        // Get current customer Id.
-        _currentCustomerId = _customerService.getCustomerIdByUserName(_currentCustomerUserName);
-
-        if (_currentCustomerId == -1)
-        {
-            Console.WriteLine("Invalid customer id. please enter a valid customer id. or press 'b' to go back to main / customer menu.");
-        }
-        return _currentCustomerId;
+        Console.WriteLine("Invalid product ID.");
+        Pause();
+        return;
     }
+
+    Console.WriteLine("Enter quantity:");
+    if (!int.TryParse(Console.ReadLine(), out int quantity))
+    {
+        Console.WriteLine("Invalid quantity.");
+        Pause();
+        return;
+    }
+
+    bool success = _customerService.AddProductToCart(
+        _currentCustomerId,
+        productId,
+        quantity);
+
+    if (success)
+        Console.WriteLine("Product added to cart.");
+    else
+        Console.WriteLine("Failed to add product.");
+
+    Pause();
+}
 
     /*
     ==========================================================================================
