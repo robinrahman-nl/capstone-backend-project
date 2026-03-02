@@ -4,7 +4,6 @@ using Capstone.Models;
 using Capstone.Services;
 using Capstone.Data;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 namespace Capstone;
 
@@ -15,16 +14,15 @@ public class UI : IDisplayable
     private string _currentCustomerUserName;
     private int _currentCustomerId;
     public readonly CustomerService _customerService;
-    public readonly OrderRepository _orderRepository;
+    
 
 
 
-    public UI(AdminService adminService, ProductService productService, CustomerService customerService, OrderRepository orderRepository)
+    public UI(AdminService adminService, ProductService productService, CustomerService customerService)
     {
         _adminService = adminService;
         _productService = productService;
         _customerService = customerService;
-        _orderRepository = orderRepository;
     }
 
     /*
@@ -371,7 +369,7 @@ public class UI : IDisplayable
         Please select an option
         [0] Show entire product catalogue. {working}
         [1] View details of a specific product (by ID). {working}
-        [2] Add product to cart. 
+        [2] Add product to cart. {working}
         [3] View cart.
         [4] Place order.
         [5] Go back to main menu. 

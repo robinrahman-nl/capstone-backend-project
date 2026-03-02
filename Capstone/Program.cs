@@ -17,7 +17,7 @@ class Program
         OrderRepository orderRepository = new OrderRepository(database1);
         CustomerService customerService = new CustomerService(productRepository, customerRepository, orderRepository);  
 
-        UI ui = new UI(adminService, productService, customerService, orderRepository);
+        UI ui = new UI(adminService, productService, customerService);
 
         ui.Run();
     }
