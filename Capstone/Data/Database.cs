@@ -3,9 +3,14 @@ using MySqlConnector;
 namespace Capstone.Data;
 
 public class Database
-{
-    private readonly string _connectionString = 
-        "Server=localhost;Database=capstone_store;User=capstone_user;Password=1234;";
+{   
+    
+    private readonly string _connectionString;
+
+    public Database(string connectionString)
+    {
+        _connectionString = connectionString;
+    }
 
     public MySqlConnection GetConnection()
     {
