@@ -73,8 +73,7 @@ ORDER BY
             string userEmail = reader.GetString("user_email");
             string userAddress = reader.GetString("user_address");
 
-            User user = new User(userId, firstName, lastName, userName, userEmail, userAddress);
-            Customer customer = new Customer(customerId, user, age);
+            Customer customer = new Customer(customerId, userId, firstName, lastName, userName, userEmail, userAddress, age);
             Order order = new Order(orderId, customer, orderDate, orderStatus);
 
             orders.Add(order);
@@ -145,15 +144,14 @@ LIMIT 1;
     string userEmail = reader.GetString("user_email");
     string userAddress = reader.GetString("user_address");
 
-    User user = new User(userId, firstName, lastName, userName, userEmail, userAddress);
-    Customer customer = new Customer(customerId, user, age);
+    Customer customer = new Customer(customerId, userId, firstName, lastName, userName, userEmail, userAddress, age);
     Order order = new Order(orderId, customer, orderDate, orderStatus);
 
     return order;
 }
 
 // ------------------------------------------------------------------
-// METHOD: Create new (empty) CART for customer by customer id, into 'order' table.
+// METHOD: Create new (empty) CART for customer by customer id, into 'orders' table.
 // ------------------------------------------------------------------
 public int CreateCart(int customerId)
 {
@@ -240,7 +238,7 @@ public int UpdateOrderDetail(int detailId, int newAmount, double newTotalPrice)
 UPDATE order_details
 SET amount = @amount,
     total_price = @total_price
-WHERE order_detail_id = @detail_id;
+WHERE detail_id = @detail_id;
 ";
 
     using var command = new MySqlCommand(query, connection);

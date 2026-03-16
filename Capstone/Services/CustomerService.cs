@@ -1,6 +1,7 @@
 using Capstone.Data;
 using Capstone.Models;
 using Capstone.Interfaces;
+using System.Linq;
 namespace Capstone.Services;
 
 public class CustomerService: ICustomerService
@@ -17,10 +18,10 @@ public class CustomerService: ICustomerService
     }
 
 
-     public int getCustomerIdByUserName(string username)
+     public int GetCustomerIdByUserName(string username)
     {
         var customers = _customerRepository.GetAllCustomers();
-        var customer =  customers.FirstOrDefault(c => c.User.UserName.ToLower() == username.ToLower());
+        var customer =  customers.FirstOrDefault(c => c.UserName.ToLower() == username.ToLower());
 
         if (customer == null)
                  

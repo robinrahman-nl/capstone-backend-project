@@ -1,29 +1,42 @@
 namespace Capstone.Models;
 
-public class Customer
+public class Customer : User
 {
     public int CustomerId { get; private set; }
-    public User User { get; private set; }
     public int Age { get; private set; }
 
 
-    public Customer(int customerId, User user, int age)
+    public Customer(
+        int customerId,
+        int userId,
+        string firstName,
+        string lastName,
+        string userName,
+        string userEmail,
+        string userAddress,
+        int age
+        ) : base(userId, firstName, lastName, userName, userEmail, userAddress)
     {
         this.CustomerId = customerId;
-        this.User = user;
+
         this.Age = age;
     }
     public override string ToString()
     {
         return
-    @"----------------
+    $@"----------------
 Customer Details
 ----------------
-Customer ID: " + CustomerId + @"
+Customer ID: {CustomerId}
 
-" + User + @"
+User ID: {UserId}
+First Name: {FirstName}
+Last Name: {LastName}
+User Name: {UserName}
+User Email: {UserEmail}
+User Address: {UserAddress}
 
-Age: " + Age + @"
+Age: {Age}
 ";
     }
 

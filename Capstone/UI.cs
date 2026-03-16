@@ -391,7 +391,7 @@ public class UI : IDisplayable
         _currentCustomerUserName = Console.ReadLine();
 
         // Get current customer Id.
-        _currentCustomerId = _customerService.getCustomerIdByUserName(_currentCustomerUserName);
+        _currentCustomerId = _customerService.GetCustomerIdByUserName(_currentCustomerUserName);
 
         if (_currentCustomerId  == -1)
         {

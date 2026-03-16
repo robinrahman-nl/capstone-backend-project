@@ -4,14 +4,14 @@ namespace Capstone.Models;
 
 public class User 
 {
-    public int UserId { get; private set; }
+    public int UserId { get; protected set; }
 
-    public string FirstName { get; private set; }
-    public string LastName { get; private set; }
-    public string UserName { get; private set; }
-    public string UserEmail { get; private set; }
-    public string UserAddress { get; private set; }
-
+    public string FirstName { get; protected set; }
+    public string LastName { get; protected set; }
+    public string UserName { get; protected set; }
+    public string UserEmail { get; protected set; }
+    public string UserAddress { get; protected set; }
+    
     public User(int userId, string firstName, string lastName, string userName, string userEmail, string userAdress)
     {
         UserId = userId;

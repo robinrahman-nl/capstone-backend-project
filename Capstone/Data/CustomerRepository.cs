@@ -58,8 +58,7 @@ public class CustomerRepository
             string userEmail = reader.GetString("user_email");
             string userAddress = reader.GetString("user_address");
 
-            User user = new User(userId, firstName, lastName, userName, userEmail, userAddress);
-            Customer customer = new Customer(customerId, user, age);
+            Customer customer = new Customer(customerId, userId, firstName, lastName, userName, userEmail, userAddress, age);
 
             customers.Add(customer);
         }

@@ -3,7 +3,7 @@ using Capstone.Models;
 namespace Capstone.Interfaces;
 public interface ICustomerService
 {
-    int getCustomerIdByUserName(string username);
+    int GetCustomerIdByUserName(string username);
     Order GetOrCreateCart(int customerId);
     bool AddProductToCart(int customerId, int productId, int quantity);    
 }
