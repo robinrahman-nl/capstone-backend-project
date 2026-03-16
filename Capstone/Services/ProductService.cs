@@ -1,8 +1,9 @@
 using Capstone.Data;
 using Capstone.Models;
+using Capstone.Interfaces;
 namespace Capstone.Services;
 
-public class ProductService
+public class ProductService: IProductService
 {
     public readonly ProductRepository _productRepository;
 

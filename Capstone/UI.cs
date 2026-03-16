@@ -9,16 +9,16 @@ namespace Capstone;
 
 public class UI : IDisplayable
 {
-    public readonly AdminService _adminService;
-    public readonly ProductService _productService;
+    public readonly IAdminService _adminService;
+    public readonly IProductService _productService;
     private string _currentCustomerUserName;
     private int _currentCustomerId;
-    public readonly CustomerService _customerService;
+    public readonly ICustomerService _customerService;
     
 
 
 
-    public UI(AdminService adminService, ProductService productService, CustomerService customerService)
+    public UI(IAdminService adminService, IProductService productService, ICustomerService customerService)
     {
         _adminService = adminService;
         _productService = productService;

@@ -1,8 +1,10 @@
 ﻿using Capstone.Data;
+using Capstone.Interfaces;
 using Capstone.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using System.IO;
 
 namespace Capstone;
 
@@ -43,9 +45,9 @@ class Program
                 services.AddTransient<OrderRepository>();
 
                 // --- Services ---
-                services.AddTransient<AdminService>();
-                services.AddTransient<ProductService>();
-                services.AddTransient<CustomerService>();
+                services.AddTransient<IAdminService, AdminService>();
+                services.AddTransient<IProductService, ProductService>();
+                services.AddTransient<ICustomerService, CustomerService>();
 
                 // --- Entry point ---
                 services.AddTransient<UI>();

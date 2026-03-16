@@ -1,8 +1,9 @@
 using Capstone.Data;
+using Capstone.Interfaces;
 
 namespace Capstone.Services;
 
-public class AdminService
+public class AdminService: IAdminService
 {
     public readonly ProductRepository _productRepository;
 
