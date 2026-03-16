@@ -35,7 +35,6 @@ Last Name: {LastName}
 User Name: {UserName}
 User Email: {UserEmail}
 User Address: {UserAddress}
-
 Age: {Age}
 ";
     }

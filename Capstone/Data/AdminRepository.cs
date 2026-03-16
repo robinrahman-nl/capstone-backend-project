@@ -51,9 +51,7 @@ public class AdminRepository
             string address = reader.GetString("user_address");
             int adminId = reader.GetInt32("admin_id");
 
-            User user = new User(userId, firstName, lastName, userName, userEmail, address);
-            Admin admin = new Admin(user, adminId);
-
+            Admin admin = new Admin(adminId, userId, firstName, lastName, userName, userEmail, address);
             admins.Add(admin);
         }
         return admins;
