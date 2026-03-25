@@ -114,11 +114,11 @@ ORDER BY
         return affectedRows;
     }
 
-     /*
-   ------------------------------------------------------------------
-   Method: Delete a product product in product catalogue. 
-   ------------------------------------------------------------------
-   */
+    /*
+  ------------------------------------------------------------------
+  Method: Delete a product product in product catalogue. 
+  ------------------------------------------------------------------
+  */
     public int DeleteProduct(int id)
     {
         using var connection = _database.GetConnection();
@@ -134,22 +134,34 @@ ORDER BY
 
         MySqlCommand myCommand = new MySqlCommand(query, connection);
         myCommand.Parameters.AddWithValue("@product_id", id);
-        
+
         int affectedRows = myCommand.ExecuteNonQuery();
         return affectedRows;
     }
 
+    /*
+    ==========================================================================================
+    Method: Checks if a product is referenced in order_details (prevents delete due to FK constraint).
+    Parameter: productId = the product to check.
+    Returns: 'true' if this product is used in order_details. Otherwise 'false'.
+    ==========================================================================================
+    */
     public bool IsProductInUse(int productId)
-    {   
+    {
         using var connection = _database.GetConnection();
+        connection.Open();
 
-        return true;
+        string query = @"
+        SELECT 1
+        FROM order_details
+        WHERE product_id = @product_id
+        LIMIT 1;
+        ";
+
+        MySqlCommand myCommand = new MySqlCommand(query, connection);
+        myCommand.Parameters.AddWithValue("@product_id", productId);
+
+        var result = myCommand.ExecuteScalar();
+        return result != null;
     }
-
-
-
-
-
-
-
 }
