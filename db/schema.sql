@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS orders (
     order_id INT NOT NULL AUTO_INCREMENT,
     customer_id INT NOT NULL,
     order_date DATE NOT NULL,
-    order_status varchar (50) NOT NULL,
+    order_status ENUM('CART','PLACED','REJECTED','COMPLETED') NOT NULL DEFAULT 'CART',
     PRIMARY KEY (order_id),
     FOREIGN KEY (customer_id) REFERENCES customer (customer_id)
 );
