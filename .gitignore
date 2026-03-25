@@ -1,4 +1,5 @@
 # Build output
+/Capstone/Capstone.sln
 bin/
 obj/
 
