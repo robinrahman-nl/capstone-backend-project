@@ -351,7 +351,7 @@ public class UI : IDisplayable
         if (succes)
             Console.WriteLine("Product successfully deleted.");
         else
-            Console.WriteLine("Product deletion failed.");
+            Console.WriteLine("Cannot delete this product because it is in an active cart.");
 
         Pause();
     }

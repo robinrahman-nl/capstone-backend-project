@@ -139,6 +139,13 @@ ORDER BY
         return affectedRows;
     }
 
+    public bool IsProductInUse(int productId)
+    {   
+        using var connection = _database.GetConnection();
+
+        return true;
+    }
+
 
 
 
