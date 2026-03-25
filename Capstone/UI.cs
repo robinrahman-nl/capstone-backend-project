@@ -351,7 +351,8 @@ public class UI : IDisplayable
         if (succes)
             Console.WriteLine("Product successfully deleted.");
         else
-            Console.WriteLine("Cannot delete this product because it is in an active cart.");
+            Console.WriteLine("Cannot delete this product because this product is in a placed order.");
+            Console.WriteLine("Caution: To delete this product, reject all orders containing this product first.");
 
         Pause();
     }
