@@ -14,7 +14,7 @@ public class UI : IDisplayable
     private string _currentCustomerUserName;
     private int _currentCustomerId;
     public readonly ICustomerService _customerService;
-    
+
 
 
 
@@ -349,10 +349,14 @@ public class UI : IDisplayable
         bool succes = _adminService.DeleteProduct(productIdInput);
 
         if (succes)
+        {
             Console.WriteLine("Product successfully deleted.");
+        }
         else
+        {
             Console.WriteLine("Cannot delete this product because this product is in a placed order.");
             Console.WriteLine("Caution: To delete this product, reject all orders containing this product first.");
+        }
 
         Pause();
     }
@@ -372,8 +376,9 @@ public class UI : IDisplayable
         [1] View details of a specific product (by ID). {working}
         [2] Add product to cart. {working}
         [3] View cart.
-        [4] Place order.
-        [5] Go back to main menu. 
+        [4] Remove product from cart (decrease quantity).
+        [5] Place order.
+        [6] Go back to main menu. 
         ");
     }
 
@@ -394,7 +399,7 @@ public class UI : IDisplayable
         // Get current customer Id.
         _currentCustomerId = _customerService.GetCustomerIdByUserName(_currentCustomerUserName);
 
-        if (_currentCustomerId  == -1)
+        if (_currentCustomerId == -1)
         {
             Console.WriteLine("User name not found. Returning to main menu.");
             Pause();
@@ -402,7 +407,7 @@ public class UI : IDisplayable
         }
 
         // ----------------------------------------------------------------------------------------
-        
+
 
 
         bool isRunning = true;
@@ -427,20 +432,26 @@ public class UI : IDisplayable
 
                 case "3":
                     Console.WriteLine("ViewCart()");
+                    Pause();
                     break;
 
                 case "4":
-                    Console.WriteLine("PlaceOrder()");
+                    RemoveProductFromCartFromInput();
                     break;
 
-
                 case "5":
+                    Console.WriteLine("PlaceOrder()");
+                    Pause();
+                    break;
+
+                case "6":
                     Console.WriteLine("Returning to main menu.");
                     isRunning = false;
                     break;
 
                 default:
                     Console.WriteLine("Invalid option please try again.");
+                    Pause();
                     break;
             }
         }
@@ -483,35 +494,97 @@ public class UI : IDisplayable
     ==========================================================================================
     */
     public void AddProductToCartFromInput()
-{
-    Console.WriteLine("Enter Product ID:");
-    if (!int.TryParse(Console.ReadLine(), out int productId))
     {
-        Console.WriteLine("Invalid product ID.");
+        Console.WriteLine("Enter Product ID:");
+        if (!int.TryParse(Console.ReadLine(), out int productId))
+        {
+            Console.WriteLine("Invalid product ID.");
+            Pause();
+            return;
+        }
+
+        Console.WriteLine("Enter quantity:");
+        if (!int.TryParse(Console.ReadLine(), out int quantity))
+        {
+            Console.WriteLine("Invalid quantity.");
+            Pause();
+            return;
+        }
+
+        bool success = _customerService.AddProductToCart(
+            _currentCustomerId,
+            productId,
+            quantity);
+
+        if (success)
+            Console.WriteLine("Product added to cart.");
+        else
+            Console.WriteLine("Failed to add product.");
+
         Pause();
-        return;
     }
 
-    Console.WriteLine("Enter quantity:");
-    if (!int.TryParse(Console.ReadLine(), out int quantity))
+    /*
+    ==========================================================================================
+    Method: Reduce quantity of a product in CART or delete product from CART from customer input. 
+    ==========================================================================================
+    */
+
+    public void RemoveProductFromCartFromInput()
     {
-        Console.WriteLine("Invalid quantity.");
+        Console.WriteLine("Enter Product ID (or 'b' to go back):");
+        string productInput = Console.ReadLine();
+
+        if (productInput?.ToLower() == "b")
+        {
+            Console.WriteLine("Operation cancelled. Returning to customer menu...");
+            Pause();
+            return;
+        }
+
+        if (!int.TryParse(productInput, out int productId))
+        {
+            Console.WriteLine("Invalid product ID.");
+            Pause();
+            return;
+        }
+
+        Console.WriteLine("Enter quantity to remove (or 'b' to go back):");
+        string qtyInput = Console.ReadLine();
+
+        if (qtyInput?.ToLower() == "b")
+        {
+            Console.WriteLine("Operation cancelled. Returning to customer menu...");
+            Pause();
+            return;
+        }
+
+        if (!int.TryParse(qtyInput, out int quantityToRemove) || quantityToRemove <= 0)
+        {
+            Console.WriteLine("Invalid quantity. Please enter a number > 0.");
+            Pause();
+            return;
+        }
+
+        bool success = _customerService.RemoveProductFromCart(
+            _currentCustomerId,
+            productId,
+            quantityToRemove
+        );
+
+        if (success)
+        {
+            Console.WriteLine("Cart updated successfully.");
+        }
+        else
+        {
+            Console.WriteLine("Could not remove that quantity. (Product not in cart or quantity too high.)");
+        }
+
         Pause();
-        return;
     }
 
-    bool success = _customerService.AddProductToCart(
-        _currentCustomerId,
-        productId,
-        quantity);
 
-    if (success)
-        Console.WriteLine("Product added to cart.");
-    else
-        Console.WriteLine("Failed to add product.");
-
-    Pause();
-}
 
     /*
     ==========================================================================================
