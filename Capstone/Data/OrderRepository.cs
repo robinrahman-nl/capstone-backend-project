@@ -249,6 +249,26 @@ WHERE detail_id = @detail_id;
     return command.ExecuteNonQuery();
 }
 
+// ------------------------------------------------------------------
+// METHOD: Delete an order_details row by detail_id
+// Used when cart line amount becomes 0.
+// ------------------------------------------------------------------
+public int DeleteOrderDetail(int detailId)
+{
+    using var connection = _database.GetConnection();
+    connection.Open();
+
+    string query = @"
+DELETE FROM order_details
+WHERE detail_id = @detail_id;
+";
+
+    using var command = new MySqlCommand(query, connection);
+    command.Parameters.AddWithValue("@detail_id", detailId);
+
+    return command.ExecuteNonQuery();
+}
+
 
 
 
