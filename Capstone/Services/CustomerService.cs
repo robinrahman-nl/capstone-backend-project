@@ -166,5 +166,33 @@ public class CustomerService : ICustomerService
     return _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
 }
 
+/*
+==========================================================================================
+Method: Place order for current customer's CART
+------------------------------------------------------------------------------------------
+- If cart is empty -> return false
+- If cart has items -> set status CART -> PLACED
+- Then create a new empty CART so the cart is empty after placing the order
+==========================================================================================
+*/
+public bool PlaceOrder(int customerId)
+{
+    // Ensure we have a CART
+    Order cart = GetOrCreateCart(customerId);
+
+    // Cart must have items before we can place an order
+    List<OrderDetails> cartItems = _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
+    if (cartItems.Count == 0)
+        return false;
+
+    // 1) Convert current cart into a placed order
+    int updated = _orderRepository.UpdateOrderStatus(cart.OrderId, "PLACED");
+    if (updated <= 0)
+        return false;
+
+    // 2) Create a fresh empty CART for the customer (Empty cart after placing order.)
+    int created = _orderRepository.CreateCart(customerId);
+    return created > 0;
+}
 
 }

@@ -439,8 +439,7 @@ public class UI : IDisplayable
                     break;
 
                 case "5":
-                    Console.WriteLine("PlaceOrder()");
-                    Pause();
+                    PlaceOrderForCurrentCustomer();
                     break;
 
                 case "6":
@@ -520,6 +519,49 @@ public class UI : IDisplayable
         double unitPrice = product != null ? product.ProductPrice : 0;
 
         Console.WriteLine($"- ProductId: {item.ProductId} | Name: {productName} | Product Price: {unitPrice} | Qty: {item.Amount} | Total Product price: ( {unitPrice} x {item.Amount} ) = {item.TotalPrice}");
+    }
+
+    Pause();
+}
+
+/*
+=========================================================================================
+Method: Place order for current customer (uses all items currently in CART).
+=========================================================================================
+*/
+public void PlaceOrderForCurrentCustomer()
+{
+    var cartItems = _customerService.GetCartItems(_currentCustomerId);
+
+    if (cartItems.Count == 0)
+    {
+        Console.WriteLine("Your cart is empty.");
+        Pause();
+        return;
+    }
+
+    Console.WriteLine("\nYou are about to place an order with all items in your cart.");
+    Console.WriteLine("Are you sure? (y/n)");
+
+    string confirmation = Console.ReadLine()?.ToLower();
+
+    if (confirmation != "y")
+    {
+        Console.WriteLine("You have cancelled order placement.");
+        Pause();
+        return;
+    }
+
+    bool success = _customerService.PlaceOrder(_currentCustomerId);
+
+    if (success)
+    {
+        Console.WriteLine("Order placed successfully.");
+        Console.WriteLine("Your cart is now empty.");
+    }
+    else
+    {
+        Console.WriteLine("Order placement failed.");
     }
 
     Pause();

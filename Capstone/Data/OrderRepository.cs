@@ -271,7 +271,7 @@ WHERE detail_id = @detail_id;
 
 // ------------------------------------------------------------------
 // METHOD: Get all order_details rows for a specific order_id
-// Used for showing cart contents (and later admin views).
+// Used for showing cart contents (by customer or admin.
 // ------------------------------------------------------------------
 public List<OrderDetails> GetOrderDetailsByOrderId(int orderId)
 {
@@ -308,6 +308,33 @@ ORDER BY detail_id;
     }
 
     return details;
+}
+
+/*
+ ==========================================================================================
+ METHOD: Update the status of an order ( CART -> PLACED or PLACED -> REJECTED).
+And set order_date to today's date when placing order.
+Returns: (int) Affected rows.
+
+==========================================================================================
+*/
+public int UpdateOrderStatus(int orderId, string newStatus)
+{
+    using var connection = _database.GetConnection();
+    connection.Open();
+
+    string query = @"
+UPDATE orders
+SET order_status = @status,
+    order_date = CURDATE()
+WHERE order_id = @order_id;
+";
+
+    using var command = new MySqlCommand(query, connection);
+    command.Parameters.AddWithValue("@status", newStatus);
+    command.Parameters.AddWithValue("@order_id", orderId);
+
+    return command.ExecuteNonQuery();
 }
 
 
