@@ -7,4 +7,7 @@ public interface ICustomerService
     Order GetOrCreateCart(int customerId);
     bool AddProductToCart(int customerId, int productId, int quantity);
     bool RemoveProductFromCart(int customerId, int productId, int quantityToRemove);
+
+    // View cart items.
+    List<OrderDetails> GetCartItems(int customerId);
 }

@@ -269,7 +269,46 @@ WHERE detail_id = @detail_id;
     return command.ExecuteNonQuery();
 }
 
+// ------------------------------------------------------------------
+// METHOD: Get all order_details rows for a specific order_id
+// Used for showing cart contents (and later admin views).
+// ------------------------------------------------------------------
+public List<OrderDetails> GetOrderDetailsByOrderId(int orderId)
+{
+    using var connection = _database.GetConnection();
+    connection.Open();
 
+    string query = @"
+SELECT 
+    detail_id,
+    order_id,
+    product_id,
+    amount,
+    total_price
+FROM order_details
+WHERE order_id = @order_id
+ORDER BY detail_id;
+";
+
+    using var command = new MySqlCommand(query, connection);
+    command.Parameters.AddWithValue("@order_id", orderId);
+
+    using var reader = command.ExecuteReader();
+
+    List<OrderDetails> details = new List<OrderDetails>();
+
+    while (reader.Read())
+    {
+        int detailId = reader.GetInt32("detail_id");
+        int productId = reader.GetInt32("product_id");
+        int amount = reader.GetInt32("amount");
+        double totalPrice = Convert.ToDouble(reader.GetDecimal("total_price"));
+
+        details.Add(new OrderDetails(detailId, orderId, productId, amount, totalPrice));
+    }
+
+    return details;
+}
 
 
 }

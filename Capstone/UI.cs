@@ -431,8 +431,7 @@ public class UI : IDisplayable
                     break;
 
                 case "3":
-                    Console.WriteLine("ViewCart()");
-                    Pause();
+                    ViewCartforCurrentCustomer();
                     break;
 
                 case "4":
@@ -488,6 +487,47 @@ public class UI : IDisplayable
         Console.WriteLine(product);
         Pause();
     }
+
+    /*
+    ==========================================================================================
+    Method: View cart for current customer.
+    ==========================================================================================
+    */
+    public void ViewCartforCurrentCustomer()
+{
+    var cart = _customerService.GetOrCreateCart(_currentCustomerId);
+    var cartItems = _customerService.GetCartItems(_currentCustomerId);
+
+    Console.WriteLine("\n--- Your current cart ---");
+    Console.WriteLine($"Cart OrderId: {cart.OrderId} | Status: {cart.OrderStatus}");
+
+    if (cartItems.Count == 0)
+    {
+        Console.WriteLine("Your cart is empty.");
+        Pause();
+        return;
+    }
+
+    // Get the the productnames from catalogue by product id.
+    var products = _productService.GetAllProducts();
+
+    Console.WriteLine("\nItems:");
+    foreach (var item in cartItems)
+    {
+        var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+
+        string productName = product != null ? product.ProductName : "(product not found)";
+        double unitPrice = product != null ? product.ProductPrice : 0;
+
+        Console.WriteLine($"- ProductId: {item.ProductId} | Name: {productName} | Product Price: {unitPrice} | Qty: {item.Amount} | Total Product price: ( {unitPrice} x {item.Amount} ) = {item.TotalPrice}");
+    }
+
+    Pause();
+}
+
+
+
+
     /*
     ==========================================================================================
     Method: Add product to cart or create new CART from customer input. 

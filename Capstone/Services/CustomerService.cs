@@ -157,5 +157,14 @@ public class CustomerService : ICustomerService
         return result > 0;
     }
 
+    public List<OrderDetails> GetCartItems(int customerId)
+{
+    // Check if cart exists and if not create cart.
+    Order cart = GetOrCreateCart(customerId);
+
+    // Fetch all lines for this cart
+    return _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
+}
+
 
 }
