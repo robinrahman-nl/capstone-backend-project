@@ -1,15 +1,18 @@
 using Capstone.Data;
 using Capstone.Interfaces;
+using Capstone.Models;
 
 namespace Capstone.Services;
 
 public class AdminService : IAdminService
 {
     public readonly ProductRepository _productRepository;
+    public readonly OrderRepository _orderRepository;
 
-    public AdminService(ProductRepository productRepository)
+    public AdminService(ProductRepository productRepository, OrderRepository orderRepository)
     {
         _productRepository = productRepository;
+        _orderRepository = orderRepository;
     }
 
     public bool AddProduct(string productName, string description, double productPrice, int quantityInStock)
@@ -31,5 +34,10 @@ public class AdminService : IAdminService
 
         int result = _productRepository.DeleteProduct(productId);
         return result > 0;
+    }
+
+    public List<Order> GetAllSubmittedOrders()
+    {
+        return _orderRepository.GetAllSubmittedOrders();
     }
 }

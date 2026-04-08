@@ -16,7 +16,7 @@ public class OrderRepository
     // METHOD: Retrieves full Order objects.
     // ------------------------------------------------------------------
 
-    public List<Order> GetOrders()
+    public List<Order> GetAllSubmittedOrders()
     {
         using var connection = _database.GetConnection();
         connection.Open();
@@ -47,6 +47,9 @@ JOIN
 JOIN 
     users u 
     ON c.user_id = u.user_id
+
+WHERE 
+    o.order_status = 'SUBMITTED'
 
 ORDER BY 
     o.order_id;

@@ -360,12 +360,27 @@ public class UI : IDisplayable
         Pause();
     }
 
-    public void ShowAllIncomingOrder()
+   public void ShowAllIncomingOrder()
+{
+    var ordersList = _adminService.GetAllSubmittedOrders();
+
+    Console.WriteLine("\n--- Incoming Orders ---");
+
+    if (ordersList == null || ordersList.Count == 0)
     {
-        
-        Console.WriteLine("Displaying all incoming order.");
+        Console.WriteLine("No orders found.");
         Pause();
+        return;
     }
+
+    foreach (var order in ordersList)
+    {
+        Console.WriteLine(order);
+        Console.WriteLine("----------------------");
+    }
+
+    Pause();
+}
 
     /*
     ==========================================================================================
