@@ -11,8 +11,7 @@ public class UI : IDisplayable
 {
     public readonly IAdminService _adminService;
     public readonly IProductService _productService;
-    private string _currentCustomerUserName;
-    private int _currentCustomerId;
+    private int? _currentCustomerId;
     public readonly ICustomerService _customerService;
 
 
@@ -42,10 +41,10 @@ public class UI : IDisplayable
         
         Please select an option
 
-        [1] Show entire product catalogue. {Working}
-        [2] Log in as a Customer. {working}
-        [3] Log in as an Admin. {working}
-        [4] Exit Program. {working}
+        [1] Show entire product catalogue.
+        [2] Log in as a Customer.
+        [3] Log in as an Admin.
+        [4] Exit Program.
         ");
     }
 
@@ -62,12 +61,12 @@ public class UI : IDisplayable
         Console.WriteLine(@"
         Please select an option
 
-        [0] Show entire product catalogue. {working}
-        [1] Add a product to the product catalogue. {working}
-        [2] Edit a product in the product catalogue. {working}
-        [3] Delete a product in the product catalogue. {working}
-        [4] Show all incoming orders. 
-        [5] Go back to main menu. {working}
+        [0] Show entire product catalogue.
+        [1] Add a product to the product catalogue.
+        [2] Edit a product in the product catalogue.
+        [3] Delete a product in the product catalogue.
+        [4] Show all incoming orders. {ToDo}
+        [5] Go back to main menu.
         ");
     }
 
@@ -151,7 +150,7 @@ public class UI : IDisplayable
                     break;
 
                 case "4":
-                    Console.WriteLine("ShowAllIncomingOrder()");
+                    ShowAllIncomingOrder();
                     break;
 
                 case "5":
@@ -361,6 +360,13 @@ public class UI : IDisplayable
         Pause();
     }
 
+    public void ShowAllIncomingOrder()
+    {
+        
+        Console.WriteLine("Displaying all incoming order.");
+        Pause();
+    }
+
     /*
     ==========================================================================================
     Method: Display Customer Menu. 
@@ -369,16 +375,17 @@ public class UI : IDisplayable
     public void DisplayCustomerMenu()
     {
         Console.Clear();
+        
 
         Console.WriteLine(@"
         Please select an option
-        [0] Show entire product catalogue. {working}
-        [1] View details of a specific product (by ID). {working}
-        [2] Add product to cart. {working}
+        [0] Show entire product catalogue.
+        [1] View details of a specific product (by ID).
+        [2] Add product to cart.
         [3] View cart.
         [4] Remove product from cart (decrease quantity).
         [5] Place order.
-        [6] Go back to main menu. 
+        [6] Go back to main menu.
         ");
     }
 
@@ -394,17 +401,19 @@ public class UI : IDisplayable
         // Set current customer id
         // Ask for customer username and store it internally.
         Console.WriteLine("Please Enter your username");
-        _currentCustomerUserName = Console.ReadLine();
+        string username = Console.ReadLine() ?? string.Empty;
 
         // Get current customer Id.
-        _currentCustomerId = _customerService.GetCustomerIdByUserName(_currentCustomerUserName);
+        _currentCustomerId = _customerService.GetCustomerIdByUserName(username);
 
-        if (_currentCustomerId == -1)
+
+        if (_currentCustomerId == null)
         {
             Console.WriteLine("User name not found. Returning to main menu.");
             Pause();
             return; // exit customer menu. 
         }
+        
 
         // ----------------------------------------------------------------------------------------
 
@@ -482,7 +491,7 @@ public class UI : IDisplayable
         }
 
         var productList = _productService.GetAllProducts();
-        Product product = productList.FirstOrDefault(product => product.ProductId == productIdInput);
+        Product? product = productList.FirstOrDefault(product => product.ProductId == productIdInput);
         Console.WriteLine(product);
         Pause();
     }
@@ -494,8 +503,8 @@ public class UI : IDisplayable
     */
     public void ViewCartforCurrentCustomer()
 {
-    var cart = _customerService.GetOrCreateCart(_currentCustomerId);
-    var cartItems = _customerService.GetCartItems(_currentCustomerId);
+    var cart = _customerService.GetOrCreateCart(_currentCustomerId.Value);
+    var cartItems = _customerService.GetCartItems(_currentCustomerId.Value);
 
     Console.WriteLine("\n--- Your current cart ---");
     Console.WriteLine($"Cart OrderId: {cart.OrderId} | Status: {cart.OrderStatus}");
@@ -531,7 +540,7 @@ Method: Place order for current customer (uses all items currently in CART).
 */
 public void PlaceOrderForCurrentCustomer()
 {
-    var cartItems = _customerService.GetCartItems(_currentCustomerId);
+    var cartItems = _customerService.GetCartItems(_currentCustomerId.Value);
 
     if (cartItems.Count == 0)
     {
@@ -543,7 +552,7 @@ public void PlaceOrderForCurrentCustomer()
     Console.WriteLine("\nYou are about to place an order with all items in your cart.");
     Console.WriteLine("Are you sure? (y/n)");
 
-    string confirmation = Console.ReadLine()?.ToLower();
+    string? confirmation = Console.ReadLine()?.ToLower();
 
     if (confirmation != "y")
     {
@@ -552,7 +561,7 @@ public void PlaceOrderForCurrentCustomer()
         return;
     }
 
-    bool success = _customerService.PlaceOrder(_currentCustomerId);
+    bool success = _customerService.PlaceOrder(_currentCustomerId.Value);
 
     if (success)
     {
@@ -594,7 +603,7 @@ public void PlaceOrderForCurrentCustomer()
         }
 
         bool success = _customerService.AddProductToCart(
-            _currentCustomerId,
+            _currentCustomerId.Value,
             productId,
             quantity);
 
@@ -649,7 +658,7 @@ public void PlaceOrderForCurrentCustomer()
         }
 
         bool success = _customerService.RemoveProductFromCart(
-            _currentCustomerId,
+            _currentCustomerId.Value,
             productId,
             quantityToRemove
         );

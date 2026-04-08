@@ -18,14 +18,13 @@ public class CustomerService : ICustomerService
     }
 
 
-    public int GetCustomerIdByUserName(string username)
+    public int? GetCustomerIdByUserName(string username)
     {
         var customers = _customerRepository.GetAllCustomers();
         var customer = customers.FirstOrDefault(c => c.UserName.ToLower() == username.ToLower());
 
         if (customer == null)
-
-            return -1;
+        return null;
 
 
         return customer.CustomerId;
