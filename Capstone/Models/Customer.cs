@@ -21,6 +21,11 @@ public class Customer : User
 
         this.Age = age;
     }
+
+    public Customer(int customerId)
+    {
+        CustomerId = customerId;
+    }
     public override string ToString()
     {
         return

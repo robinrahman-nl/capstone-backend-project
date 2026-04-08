@@ -34,13 +34,18 @@ SELECT
     p.product_name,
     p.description,
     p.product_price,
-    p.quantity_in_stock
+    p.quantity_in_stock,
+
+    c.customer_id,
+    c.username
 
 FROM order_details od
 JOIN orders o 
     ON od.order_id = o.order_id
 JOIN product_catalogue p
     ON od.product_id = p.product_id
+JOIN customers c
+    ON o.customer_id = c.customer_id
 ORDER BY od.detail_id;
 ";
 
@@ -66,8 +71,12 @@ ORDER BY od.detail_id;
             int amount = reader.GetInt32("amount");
             double totalPrice = reader.GetDouble("total_price");
 
-            // Minimal Order object (without customer for now)
-            Order order = new Order(orderId, null, orderDate, orderStatus);
+            int customerId = reader.GetInt32("customer_id");
+            // string username = reader.GetString("username");
+
+            Customer customer = new Customer(customerId);
+
+            Order order = new Order(orderId, customer, orderDate, orderStatus);
 
             Product product = new Product(productId, productName, description, productPrice, quantityInStock);
 
