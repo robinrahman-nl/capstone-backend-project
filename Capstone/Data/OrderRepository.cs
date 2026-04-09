@@ -90,7 +90,7 @@ ORDER BY
 // Returns null if no CART exists.
 // ------------------------------------------------------------------
 
-public Order GetCartByCustomerId(int customerId)
+public Order? GetCartByCustomerId(int customerId)
 {
     using var connection = _database.GetConnection();
     connection.Open();
@@ -178,7 +178,7 @@ VALUES (@customer_id, NOW(), 'CART');
 // ------------------------------------------------------------------
 // METHOD: Check if product already exists in CART
 // ------------------------------------------------------------------
-public OrderDetails GetOrderDetail(int orderId, int productId)
+public OrderDetails? GetOrderDetail(int orderId, int productId)
 {
     using var connection = _database.GetConnection();
     connection.Open();

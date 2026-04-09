@@ -65,7 +65,7 @@ public class UI : IDisplayable
         [1] Add a product to the product catalogue.
         [2] Edit a product in the product catalogue.
         [3] Delete a product in the product catalogue.
-        [4] Show all incoming orders. {ToDo}
+        [4] Show all incoming orders.
         [5] Go back to main menu.
         ");
     }
@@ -85,7 +85,7 @@ public class UI : IDisplayable
         while (isRunning)
         {
             DisplayMainMenu();
-            string userInputMainMenu = Console.ReadLine();
+            string userInputMainMenu = Console.ReadLine() ?? "";
 
             switch (userInputMainMenu)
             {
@@ -128,7 +128,7 @@ public class UI : IDisplayable
         while (isRunning)
         {
             DisplayAdminMenu();
-            string userInputAdminnMenu = Console.ReadLine();
+            string userInputAdminnMenu = Console.ReadLine() ?? "";
 
             switch (userInputAdminnMenu)
             {
@@ -203,10 +203,10 @@ public class UI : IDisplayable
     {
 
         Console.WriteLine("Enter product name.");
-        string productNameInput = Console.ReadLine();
+        string productNameInput = Console.ReadLine() ?? "";
 
         Console.WriteLine("Enter product description");
-        string descriptionInput = Console.ReadLine();
+        string descriptionInput = Console.ReadLine() ?? "";
 
         // Ask for price.
         double productPrice;
@@ -244,7 +244,7 @@ public class UI : IDisplayable
 
         while (true)
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? "";
 
             if (input?.ToLower() == "b")
             {
@@ -260,11 +260,11 @@ public class UI : IDisplayable
 
         // Ask for product name to update.
         Console.WriteLine("Enter product name.");
-        string productNameInput = Console.ReadLine();
+        string productNameInput = Console.ReadLine() ?? "";
 
         // Ask for product description to update. 
         Console.WriteLine("Enter product description to update.");
-        string descriptionInput = Console.ReadLine();
+        string descriptionInput = Console.ReadLine() ?? "";
 
         // Ask for Product price to update. 
         double productPriceInput;
@@ -305,7 +305,7 @@ public class UI : IDisplayable
 
         while (true)
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? "";
 
             if (input?.ToLower() == "b")
             {
@@ -335,7 +335,7 @@ public class UI : IDisplayable
         Console.WriteLine(product);
         Console.WriteLine("Are you sure you want to delete this product? (y/n)");
 
-        string confirmation = Console.ReadLine()?.ToLower();
+        string confirmation = Console.ReadLine()?.ToLower() ?? "";
 
         if (confirmation != "y")
         {
@@ -360,27 +360,27 @@ public class UI : IDisplayable
         Pause();
     }
 
-   public void ShowAllIncomingOrder()
-{
-    var ordersList = _adminService.GetAllSubmittedOrders();
-
-    Console.WriteLine("\n--- Incoming Orders ---");
-
-    if (ordersList == null || ordersList.Count == 0)
+    public void ShowAllIncomingOrder()
     {
-        Console.WriteLine("No orders found.");
+        var ordersList = _adminService.GetAllSubmittedOrders();
+
+        Console.WriteLine("\n--- Incoming Orders ---");
+
+        if (ordersList == null || ordersList.Count == 0)
+        {
+            Console.WriteLine("No orders found.");
+            Pause();
+            return;
+        }
+
+        foreach (var order in ordersList)
+        {
+            Console.WriteLine(order);
+            Console.WriteLine("----------------------");
+        }
+
         Pause();
-        return;
     }
-
-    foreach (var order in ordersList)
-    {
-        Console.WriteLine(order);
-        Console.WriteLine("----------------------");
-    }
-
-    Pause();
-}
 
     /*
     ==========================================================================================
@@ -390,7 +390,7 @@ public class UI : IDisplayable
     public void DisplayCustomerMenu()
     {
         Console.Clear();
-        
+
 
         Console.WriteLine(@"
         Please select an option
@@ -428,7 +428,7 @@ public class UI : IDisplayable
             Pause();
             return; // exit customer menu. 
         }
-        
+
 
         // ----------------------------------------------------------------------------------------
 
@@ -438,7 +438,7 @@ public class UI : IDisplayable
         while (isRunning)
         {
             DisplayCustomerMenu();
-            string userInputCustomerMenu = Console.ReadLine();
+            string userInputCustomerMenu = Console.ReadLine() ?? "";
 
             switch (userInputCustomerMenu)
             {
@@ -491,7 +491,7 @@ public class UI : IDisplayable
 
         while (true)
         {
-            string input = Console.ReadLine();
+            string input = Console.ReadLine() ?? "";
 
             if (input?.ToLower() == "b")
             {
@@ -517,79 +517,83 @@ public class UI : IDisplayable
     ==========================================================================================
     */
     public void ViewCartforCurrentCustomer()
-{
-    var cart = _customerService.GetOrCreateCart(_currentCustomerId.Value);
-    var cartItems = _customerService.GetCartItems(_currentCustomerId.Value);
-
-    Console.WriteLine("\n--- Your current cart ---");
-    Console.WriteLine($"Cart OrderId: {cart.OrderId} | Status: {cart.OrderStatus}");
-
-    if (cartItems.Count == 0)
     {
-        Console.WriteLine("Your cart is empty.");
+        // Warning handling by throwing error if null. Customer id must not be null. 
+        int customerId = _currentCustomerId ?? throw new Exception("Customer not logged in.");
+        var cart = _customerService.GetOrCreateCart(customerId);
+        var cartItems = _customerService.GetCartItems(customerId);
+
+        Console.WriteLine("\n--- Your current cart ---");
+        Console.WriteLine($"Cart OrderId: {cart.OrderId} | Status: {cart.OrderStatus}");
+
+        if (cartItems.Count == 0)
+        {
+            Console.WriteLine("Your cart is empty.");
+            Pause();
+            return;
+        }
+
+        // Get the the productnames from catalogue by product id.
+        var products = _productService.GetAllProducts();
+
+        Console.WriteLine("\nItems:");
+        foreach (var item in cartItems)
+        {
+            var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+
+            string productName = product != null ? product.ProductName : "(product not found)";
+            double unitPrice = product != null ? product.ProductPrice : 0;
+
+            Console.WriteLine($"- ProductId: {item.ProductId} | Name: {productName} | Product Price: {unitPrice} | Qty: {item.Amount} | Total Product price: ( {unitPrice} x {item.Amount} ) = {item.TotalPrice}");
+        }
+
         Pause();
-        return;
     }
 
-    // Get the the productnames from catalogue by product id.
-    var products = _productService.GetAllProducts();
-
-    Console.WriteLine("\nItems:");
-    foreach (var item in cartItems)
+    /*
+    =========================================================================================
+    Method: Place order for current customer (uses all items currently in CART).
+    =========================================================================================
+    */
+    public void PlaceOrderForCurrentCustomer()
     {
-        var product = products.FirstOrDefault(p => p.ProductId == item.ProductId);
+        // Warning handling by throwing error if null. Customer id must not be null. 
+        int customerId = _currentCustomerId ?? throw new Exception("Customer not logged in.");
+        var cartItems = _customerService.GetCartItems(customerId);
 
-        string productName = product != null ? product.ProductName : "(product not found)";
-        double unitPrice = product != null ? product.ProductPrice : 0;
+        if (cartItems.Count == 0)
+        {
+            Console.WriteLine("Your cart is empty.");
+            Pause();
+            return;
+        }
 
-        Console.WriteLine($"- ProductId: {item.ProductId} | Name: {productName} | Product Price: {unitPrice} | Qty: {item.Amount} | Total Product price: ( {unitPrice} x {item.Amount} ) = {item.TotalPrice}");
-    }
+        Console.WriteLine("\nYou are about to place an order with all items in your cart.");
+        Console.WriteLine("Are you sure? (y/n)");
 
-    Pause();
-}
+        string? confirmation = Console.ReadLine()?.ToLower();
 
-/*
-=========================================================================================
-Method: Place order for current customer (uses all items currently in CART).
-=========================================================================================
-*/
-public void PlaceOrderForCurrentCustomer()
-{
-    var cartItems = _customerService.GetCartItems(_currentCustomerId.Value);
+        if (confirmation != "y")
+        {
+            Console.WriteLine("You have cancelled order placement.");
+            Pause();
+            return;
+        }
 
-    if (cartItems.Count == 0)
-    {
-        Console.WriteLine("Your cart is empty.");
+        bool success = _customerService.PlaceOrder(_currentCustomerId.Value);
+
+        if (success)
+        {
+            Console.WriteLine("Order placed successfully.");
+            Console.WriteLine("Your cart is now empty.");
+        }
+        else
+        {
+            Console.WriteLine("Order placement failed.");
+        }
+
         Pause();
-        return;
     }
-
-    Console.WriteLine("\nYou are about to place an order with all items in your cart.");
-    Console.WriteLine("Are you sure? (y/n)");
-
-    string? confirmation = Console.ReadLine()?.ToLower();
-
-    if (confirmation != "y")
-    {
-        Console.WriteLine("You have cancelled order placement.");
-        Pause();
-        return;
-    }
-
-    bool success = _customerService.PlaceOrder(_currentCustomerId.Value);
-
-    if (success)
-    {
-        Console.WriteLine("Order placed successfully.");
-        Console.WriteLine("Your cart is now empty.");
-    }
-    else
-    {
-        Console.WriteLine("Order placement failed.");
-    }
-
-    Pause();
-}
 
 
 
@@ -618,7 +622,7 @@ public void PlaceOrderForCurrentCustomer()
         }
 
         bool success = _customerService.AddProductToCart(
-            _currentCustomerId.Value,
+            (_currentCustomerId ?? throw new Exception("Customer not logged in.")),
             productId,
             quantity);
 
@@ -639,7 +643,7 @@ public void PlaceOrderForCurrentCustomer()
     public void RemoveProductFromCartFromInput()
     {
         Console.WriteLine("Enter Product ID (or 'b' to go back):");
-        string productInput = Console.ReadLine();
+        string productInput = Console.ReadLine() ?? "";
 
         if (productInput?.ToLower() == "b")
         {
@@ -656,7 +660,7 @@ public void PlaceOrderForCurrentCustomer()
         }
 
         Console.WriteLine("Enter quantity to remove (or 'b' to go back):");
-        string qtyInput = Console.ReadLine();
+        string qtyInput = Console.ReadLine() ?? "";
 
         if (qtyInput?.ToLower() == "b")
         {
@@ -673,7 +677,7 @@ public void PlaceOrderForCurrentCustomer()
         }
 
         bool success = _customerService.RemoveProductFromCart(
-            _currentCustomerId.Value,
+            (_currentCustomerId ?? throw new Exception("Customer not logged in.")),
             productId,
             quantityToRemove
         );

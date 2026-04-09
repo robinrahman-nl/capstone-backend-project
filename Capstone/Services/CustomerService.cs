@@ -42,7 +42,7 @@ public class CustomerService : ICustomerService
     */
     public Order GetOrCreateCart(int customerId)
     {
-        Order cart = _orderRepository.GetCartByCustomerId(customerId);
+        Order? cart = _orderRepository.GetCartByCustomerId(customerId);
 
         if (cart != null)
             return cart;
@@ -51,7 +51,14 @@ public class CustomerService : ICustomerService
         _orderRepository.CreateCart(customerId);
 
         // Retrieve newly created cart
-        return _orderRepository.GetCartByCustomerId(customerId);
+        Order? newCart = _orderRepository.GetCartByCustomerId(customerId);
+
+        if (newCart == null)
+        {
+            throw new Exception("Failed to create cart for customer.");
+        }
+
+        return newCart;
     }
 
     /*
@@ -74,7 +81,7 @@ public class CustomerService : ICustomerService
         double unitPrice = product.ProductPrice;
 
         // Check if product exist already in cart. Else create new CART (order_detal row) in order_details table. 
-        OrderDetails existingDetail =
+        OrderDetails? existingDetail =
             _orderRepository.GetOrderDetail(cart.OrderId, productId);
 
         if (existingDetail != null)
@@ -129,7 +136,7 @@ public class CustomerService : ICustomerService
         double unitPrice = product.ProductPrice;
 
         // Find existing cart line
-        OrderDetails existingDetail = _orderRepository.GetOrderDetail(cart.OrderId, productId);
+        OrderDetails? existingDetail = _orderRepository.GetOrderDetail(cart.OrderId, productId);
 
         if (existingDetail == null)
             return false;
