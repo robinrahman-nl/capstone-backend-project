@@ -230,9 +230,9 @@ VALUES (@order_id, @product_id, @amount, @total_price);
 }
 
 // ------------------------------------------------------------------
-// METHOD: Update existing order_detail (increase quantity)
+// METHOD: Update existing order_detail amount and total_price
 // ------------------------------------------------------------------
-public int UpdateOrderDetail(int detailId, int newAmount, double newTotalPrice)
+public bool UpdateOrderDetail(int detailId, int newAmount, double newTotalPrice)
 {
     using var connection = _database.GetConnection();
     connection.Open();
@@ -249,14 +249,15 @@ WHERE detail_id = @detail_id;
     command.Parameters.AddWithValue("@total_price", newTotalPrice);
     command.Parameters.AddWithValue("@detail_id", detailId);
 
-    return command.ExecuteNonQuery();
+    int rowsAffected =  command.ExecuteNonQuery();
+    return rowsAffected > 0; // is false if rowsAffected = 0;
 }
 
 // ------------------------------------------------------------------
 // METHOD: Delete an order_details row by detail_id
 // Used when cart line amount becomes 0.
 // ------------------------------------------------------------------
-public int DeleteOrderDetail(int detailId)
+public bool DeleteOrderDetail(int detailId)
 {
     using var connection = _database.GetConnection();
     connection.Open();
@@ -269,7 +270,8 @@ WHERE detail_id = @detail_id;
     using var command = new MySqlCommand(query, connection);
     command.Parameters.AddWithValue("@detail_id", detailId);
 
-    return command.ExecuteNonQuery();
+    int rowsAffected = command.ExecuteNonQuery();
+    return rowsAffected > 0; // is false if rowsAffected = 0;
 }
 
 // ------------------------------------------------------------------

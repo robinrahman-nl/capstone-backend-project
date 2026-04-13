@@ -149,7 +149,7 @@ public class CustomerService : ICustomerService
         double newTotal = newAmount * unitPrice;
 
         // If amount becomes 0, delete the cart line; otherwise update amount and total.
-        int result;
+        bool result;
 
         if (newAmount == 0)
         {
@@ -160,7 +160,7 @@ public class CustomerService : ICustomerService
             result = _orderRepository.UpdateOrderDetail(existingDetail.DetailId, newAmount, newTotal);
         }
 
-        return result > 0;
+        return result;
     }
 
     public List<OrderDetails> GetCartItems(int customerId)
