@@ -1,9 +1,10 @@
 using Capstone.Models;
 using MySqlConnector;
+using Capstone.Interfaces;
 
 namespace Capstone.Data;
 
-public class AdminRepository
+public class AdminRepository: IAdminRepository
 {
     public readonly Database _database;
 

@@ -6,18 +6,25 @@ namespace Capstone.Services;
 
 public class CustomerService : ICustomerService
 {
-    public readonly ProductRepository _productRepository;
-    public readonly CustomerRepository _customerRepository;
-    public readonly OrderRepository _orderRepository;
+    public readonly IProductRepository _productRepository;
+    public readonly ICustomerRepository _customerRepository;
+    public readonly IOrderRepository _orderRepository;
 
-    public CustomerService(ProductRepository productRepository, CustomerRepository customerRepository, OrderRepository orderRepository)
+    public CustomerService(IProductRepository productRepository, ICustomerRepository customerRepository, IOrderRepository orderRepository)
     {
         _productRepository = productRepository;
         _customerRepository = customerRepository;
         _orderRepository = orderRepository;
     }
 
-
+/*
+==================================================================================================
+Method: Retrieve customer ID based on username.
+- Searches all customers for a matching username (case-insensitive).
+- If a match is found → return customerId.
+- If no match is found → return null.
+==================================================================================================
+*/
     public int? GetCustomerIdByUserName(string username)
     {
         var customers = _customerRepository.GetAllCustomers();
@@ -26,19 +33,16 @@ public class CustomerService : ICustomerService
         if (customer == null)
         return null;
 
-
         return customer.CustomerId;
     }
 
-
     /*
-    ==========================================================================================
+    ==================================================================================================
     Method: Get existing CART order for customer or create one if co CART exists for this customer id.
-    ------------------------------------------------------------------------------------------
     - Customer always have an active CART before products can be added.
     - If a CART already exists → return CART.
     - If no CART exists for this customer id → create a new CART and return that CART.
-    ==========================================================================================
+    ==================================================================================================
     */
     public Order GetOrCreateCart(int customerId)
     {
@@ -111,7 +115,6 @@ public class CustomerService : ICustomerService
     /*
     ==========================================================================================
     Method: Remove product from customer's CART
-    ------------------------------------------------------------------------------------------
     - If product is not in cart -> return false
     - If quantityToRemove > current amount -> return false
     - If quantityToRemove < current amount -> decrease amount and update total
@@ -174,8 +177,7 @@ public class CustomerService : ICustomerService
 
 /*
 ==========================================================================================
-Method: Place order for current customer's CART
-------------------------------------------------------------------------------------------
+Method: Place order for current customer's CART.
 - If cart is empty -> return false
 - If cart has items -> set status CART -> PLACED
 - Then create a new empty CART so the cart is empty after placing the order

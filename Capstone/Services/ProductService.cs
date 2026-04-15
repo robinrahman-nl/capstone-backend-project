@@ -5,9 +5,9 @@ namespace Capstone.Services;
 
 public class ProductService: IProductService
 {
-    public readonly ProductRepository _productRepository;
+    public readonly IProductRepository _productRepository;
 
-    public ProductService(ProductRepository productRepository)
+    public ProductService(IProductRepository productRepository)
     {
         _productRepository = productRepository;
     }

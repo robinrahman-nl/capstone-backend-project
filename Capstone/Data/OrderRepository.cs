@@ -1,9 +1,10 @@
+using Capstone.Interfaces;
 using Capstone.Models;
 using MySqlConnector;
 
 namespace Capstone.Data;
 
-public class OrderRepository
+public class OrderRepository: IOrderRepository
 {
     public readonly Database _database;
 
@@ -12,10 +13,11 @@ public class OrderRepository
         _database = database_parameter;
     }
 
-    // ------------------------------------------------------------------
-    // METHOD: Retrieves full Order objects.
-    // ------------------------------------------------------------------
-
+/*
+==================================================================================================
+METHOD: Retrieves full Order objects.
+==================================================================================================
+*/
     public List<Order> GetAllSubmittedOrders()
     {
         using var connection = _database.GetConnection();
@@ -85,10 +87,12 @@ ORDER BY
         return orders;
     }
 
-    // ------------------------------------------------------------------
-// METHOD: Retrieve CART order for a specific customer.
-// Returns null if no CART exists.
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Retrieve CART order for a specific customer.
+Returns null if no CART exists.
+==================================================================================================
+*/
 
 public Order? GetCartByCustomerId(int customerId)
 {
@@ -153,9 +157,11 @@ LIMIT 1;
     return order;
 }
 
-// ------------------------------------------------------------------
-// METHOD: Create new (empty) CART for customer by customer id, into 'orders' table.
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Create new (empty) CART for customer by customer id, into 'orders' table.
+==================================================================================================
+*/
 public int CreateCart(int customerId)
 {
     using var connection = _database.GetConnection();
@@ -174,10 +180,11 @@ VALUES (@customer_id, NOW(), 'CART');
     return affectedRows;
 }
 
-
-// ------------------------------------------------------------------
+/*
+==================================================================================================
 // METHOD: Check if product already exists in CART
-// ------------------------------------------------------------------
+==================================================================================================
+*/
 public OrderDetails? GetOrderDetail(int orderId, int productId)
 {
     using var connection = _database.GetConnection();
@@ -207,9 +214,11 @@ LIMIT 1;
     return new OrderDetails(detailId, orderId, productId, amount, totalPrice);
 }
 
-// ------------------------------------------------------------------
-// METHOD: Insert new product into order_details
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Insert new product into order_details
+==================================================================================================
+*/
 public int InsertOrderDetail(int orderId, int productId, int amount, double totalPrice)
 {
     using var connection = _database.GetConnection();
@@ -229,9 +238,11 @@ VALUES (@order_id, @product_id, @amount, @total_price);
     return command.ExecuteNonQuery();
 }
 
-// ------------------------------------------------------------------
-// METHOD: Update existing order_detail amount and total_price
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Update existing order_detail amount and total_price.
+==================================================================================================
+*/
 public bool UpdateOrderDetail(int detailId, int newAmount, double newTotalPrice)
 {
     using var connection = _database.GetConnection();
@@ -253,10 +264,12 @@ WHERE detail_id = @detail_id;
     return rowsAffected > 0; // is false if rowsAffected = 0;
 }
 
-// ------------------------------------------------------------------
-// METHOD: Delete an order_details row by detail_id
-// Used when cart line amount becomes 0.
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Delete an order_details row by detail_id.
+Used when cart line amount becomes 0.
+==================================================================================================
+*/
 public bool DeleteOrderDetail(int detailId)
 {
     using var connection = _database.GetConnection();
@@ -274,10 +287,12 @@ WHERE detail_id = @detail_id;
     return rowsAffected > 0; // is false if rowsAffected = 0;
 }
 
-// ------------------------------------------------------------------
-// METHOD: Get all order_details rows for a specific order_id
-// Used for showing cart contents (by customer or admin.
-// ------------------------------------------------------------------
+/*
+==================================================================================================
+METHOD: Get all order_details rows for a specific order_id
+Used for showing cart contents (by customer or admin.
+==================================================================================================
+*/
 public List<OrderDetails> GetOrderDetailsByOrderId(int orderId)
 {
     using var connection = _database.GetConnection();
@@ -316,13 +331,13 @@ ORDER BY detail_id;
 }
 
 /*
- ==========================================================================================
- METHOD: Update the status of an order ( CART -> PLACED or PLACED -> REJECTED).
+==================================================================================================
+METHOD: Update the status of an order ( CART -> PLACED or PLACED -> REJECTED).
 And set order_date to today's date when placing order.
 Returns: (int) Affected rows.
-
-==========================================================================================
+==================================================================================================
 */
+
 public int UpdateOrderStatus(int orderId, string newStatus)
 {
     using var connection = _database.GetConnection();

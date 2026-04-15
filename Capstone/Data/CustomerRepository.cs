@@ -1,9 +1,10 @@
+using Capstone.Interfaces;
 using Capstone.Models;
 using MySqlConnector;
 
 namespace Capstone.Data;
 
-public class CustomerRepository
+public class CustomerRepository: ICustomerRepository
 {
     public readonly Database _database;
 

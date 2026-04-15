@@ -40,9 +40,9 @@ class Program
                 });
 
                 // --- Repositories ---
-                services.AddTransient<ProductRepository>();
-                services.AddTransient<CustomerRepository>();
-                services.AddTransient<OrderRepository>();
+                services.AddTransient<IProductRepository, ProductRepository>();
+                services.AddTransient<ICustomerRepository, CustomerRepository>();
+                services.AddTransient<IOrderRepository, OrderRepository>();
 
                 // --- Services ---
                 services.AddTransient<IAdminService, AdminService>();
