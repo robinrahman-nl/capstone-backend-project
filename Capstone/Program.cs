@@ -43,6 +43,8 @@ class Program
                 services.AddTransient<IProductRepository, ProductRepository>();
                 services.AddTransient<ICustomerRepository, CustomerRepository>();
                 services.AddTransient<IOrderRepository, OrderRepository>();
+                services.AddTransient<IOrderDetailsRepository, OrderDetailsRepository>();
+                services.AddTransient<IAdminRepository, AdminRepository>();
 
                 // --- Services ---
                 services.AddTransient<IAdminService, AdminService>();

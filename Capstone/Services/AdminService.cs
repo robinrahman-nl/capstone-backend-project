@@ -7,9 +7,9 @@ namespace Capstone.Services;
 public class AdminService : IAdminService
 {
     public readonly IProductRepository _productRepository;
-    public readonly OrderRepository _orderRepository;
+    public readonly IOrderRepository _orderRepository;
 
-    public AdminService(IProductRepository productRepository, OrderRepository orderRepository)
+    public AdminService(IProductRepository productRepository, IOrderRepository orderRepository)
     {
         _productRepository = productRepository;
         _orderRepository = orderRepository;
