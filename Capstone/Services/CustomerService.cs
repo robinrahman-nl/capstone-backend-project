@@ -17,21 +17,21 @@ public class CustomerService : ICustomerService
         _orderRepository = orderRepository;
     }
 
-/*
-==================================================================================================
-Method: Retrieve customer ID based on username.
-- Searches all customers for a matching username (case-insensitive).
-- If a match is found → return customerId.
-- If no match is found → return null.
-==================================================================================================
-*/
+    /*
+    ==================================================================================================
+    Method: Retrieve customer ID based on username.
+    - Searches all customers for a matching username (case-insensitive).
+    - If a match is found → return customerId.
+    - If no match is found → return null.
+    ==================================================================================================
+    */
     public int? GetCustomerIdByUserName(string username)
     {
         var customers = _customerRepository.GetAllCustomers();
         var customer = customers.FirstOrDefault(c => c.UserName.ToLower() == username.ToLower());
 
         if (customer == null)
-        return null;
+            return null;
 
         return customer.CustomerId;
     }
@@ -93,7 +93,7 @@ Method: Retrieve customer ID based on username.
             int newAmount = existingDetail.Amount + quantity;
             double newTotal = newAmount * unitPrice;
 
-            _orderRepository.UpdateOrderDetail(
+            return _orderRepository.UpdateOrderDetail(
                 existingDetail.DetailId,
                 newAmount,
                 newTotal);
@@ -102,14 +102,12 @@ Method: Retrieve customer ID based on username.
         {
             double totalPrice = quantity * unitPrice;
 
-            _orderRepository.InsertOrderDetail(
+            return _orderRepository.InsertOrderDetail(
                 cart.OrderId,
                 productId,
                 quantity,
                 totalPrice);
         }
-
-        return true;
     }
 
     /*
@@ -167,40 +165,40 @@ Method: Retrieve customer ID based on username.
     }
 
     public List<OrderDetails> GetCartItems(int customerId)
-{
-    // Check if cart exists and if not create cart.
-    Order cart = GetOrCreateCart(customerId);
+    {
+        // Check if cart exists and if not create cart.
+        Order cart = GetOrCreateCart(customerId);
 
-    // Fetch all lines for this cart
-    return _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
-}
+        // Fetch all lines for this cart
+        return _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
+    }
 
-/*
-==========================================================================================
-Method: Place order for current customer's CART.
-- If cart is empty -> return false
-- If cart has items -> set status CART -> PLACED
-- Then create a new empty CART so the cart is empty after placing the order
-==========================================================================================
-*/
-public bool PlaceOrder(int customerId)
-{
-    // Ensure we have a CART
-    Order cart = GetOrCreateCart(customerId);
+    /*
+    ==========================================================================================
+    Method: Place order for current customer's CART.
+    - If cart is empty -> return false
+    - If cart has items -> set status CART -> PLACED
+    - Then create a new empty CART so the cart is empty after placing the order
+    ==========================================================================================
+    */
+    public bool PlaceOrder(int customerId)
+    {
+        // Ensure we have a CART
+        Order cart = GetOrCreateCart(customerId);
 
-    // Cart must have items before we can place an order
-    List<OrderDetails> cartItems = _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
-    if (cartItems.Count == 0)
-        return false;
+        // Cart must have items before we can place an order
+        List<OrderDetails> cartItems = _orderRepository.GetOrderDetailsByOrderId(cart.OrderId);
+        if (cartItems.Count == 0)
+            return false;
 
-    // 1) Convert current cart into a placed order
-    int updated = _orderRepository.UpdateOrderStatus(cart.OrderId, "PLACED");
-    if (updated <= 0)
-        return false;
+        // 1) Convert current cart into a placed order
+        int updated = _orderRepository.UpdateOrderStatus(cart.OrderId, "PLACED");
+        if (updated <= 0)
+            return false;
 
-    // 2) Create a fresh empty CART for the customer (Empty cart after placing order.)
-    int created = _orderRepository.CreateCart(customerId);
-    return created > 0;
-}
+        // 2) Create a fresh empty CART for the customer (Empty cart after placing order.)
+        int created = _orderRepository.CreateCart(customerId);
+        return created > 0;
+    }
 
 }
